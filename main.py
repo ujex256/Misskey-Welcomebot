@@ -72,8 +72,8 @@ def on_message(ws, message):
 def on_error(ws, error):
     print(error)
 
-def on_close(ws):
-    print("WebSocket closed")
+def on_close(ws, close_status_code, close_msg):
+    print("WebSocket closed. Message:", close_msg)
 
 if __name__ == "__main__":
     streaming_api = f"wss://misskey.io/streaming?i={TOKEN}"
