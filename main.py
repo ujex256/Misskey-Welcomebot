@@ -21,19 +21,20 @@ with open("ngwords.txt", "r", encoding="utf8") as f:
 
 def on_message(ws, message):
     note_body = json.loads(message)["body"]["body"]
+    note_id = note_body["id"]
+    note_text = note_body["text"]
     # 脳筋コード
     for i in NG_WORDS:
         flag = False
-        if i in note_body["text"]:
+        if i in note_text:
             for j in EXCLUDED_WORDS:
-                if j in note_body["text"]:
+                if j in note_text:
                     flag = True
                     break
             if not flag:
                 return
-    note_id = note_body["id"]
-    if not (note_body["text"] == None):
-        print(note_body["text"])
+    if not (note_text == None):
+        print(note_text)
         user_info = requests.post(
             "https://misskey.io/api/users/show",
             json={
