@@ -12,7 +12,6 @@ WELCOME_REACTIONS = [
     ":nyanpuppu:",
     ":supertada:",
     ":yorosiku_onegai:",
-    ":kanneiyahataseitetsusyo:",
 ]
 TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
 with open("ngwords.txt", "r", encoding="utf8") as f:
