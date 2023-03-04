@@ -13,7 +13,7 @@ WELCOME_REACTIONS = [
     ":supertada:",
     ":blob_hello:",
 ]
-TOKEN = os.environ["MISSKEY-TOKEN"]
+TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
 
 def on_message(ws, message):
     note_body = json.loads(message)["body"]["body"]
