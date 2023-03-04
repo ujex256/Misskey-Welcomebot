@@ -28,7 +28,7 @@ def on_message(ws, message):
         },
     )
     print(user_info.json()["notesCount"], user_info.json()["notesCount"] == 1)
-    if user_info.json()["username"] == "ujex":
+    if user_info.json()["notesCount"] == 1:
         requests.post(
             "https://misskey.io/api/notes/reactions/create",
             json={
