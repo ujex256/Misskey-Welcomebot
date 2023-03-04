@@ -51,7 +51,7 @@ def on_message(ws, message):
                 reaction = ":send_money:"
             else:
                 reaction = random.choice(WELCOME_REACTIONS)
-            print(f"[Reaction Added] noteId>>{note_id}, reaction>>{reaction}")
+            print(f"\n[Reaction Added] noteId>>{note_id}, reaction>>{reaction}")
             requests.post(
                 "https://misskey.io/api/notes/reactions/create",
                 json={
@@ -60,7 +60,7 @@ def on_message(ws, message):
                     "i": TOKEN,
                 },
             )
-            print("[Renote] noteId", note_id)
+            print("[Renote] noteId", note_id, "\n")
             requests.post(
                 "https://misskey.io/api/notes/create",
                 json={
