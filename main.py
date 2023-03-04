@@ -24,6 +24,8 @@ def on_message(ws, message):
     note_body = json.loads(message)["body"]["body"]
     note_id = note_body["id"]
     note_text = note_body["text"]
+    if note_text is None:
+        note_text = ""
 
     # 脳筋コード
     for i in NG_WORDS:
@@ -35,7 +37,7 @@ def on_message(ws, message):
                     break
             if not flag:
                 return
-    if not (note_text == None):
+    if not (note_text == ""):
         print(note_text)
         user_info = requests.post(
             "https://misskey.io/api/users/show",
