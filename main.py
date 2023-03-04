@@ -23,6 +23,7 @@ def on_message(ws, message):
     note_body = json.loads(message)["body"]["body"]
     note_id = note_body["id"]
     note_text = note_body["text"]
+
     # 脳筋コード
     for i in NG_WORDS:
         flag = False
@@ -42,16 +43,21 @@ def on_message(ws, message):
                 "i": TOKEN,
             },
         )
-        print(user_info.json()["notesCount"], user_info.json()["notesCount"] == 1)
         if user_info.json()["notesCount"] == 1:
+            if "レターパック" in note_text or ":5000" in note_text:
+                reaction = ":send_money:"
+            else:
+                reaction = random.choice(WELCOME_REACTIONS)
+            print(f"[Reaction Added] noteId>>{note_id}, reaction>>{reaction}")
             requests.post(
                 "https://misskey.io/api/notes/reactions/create",
                 json={
                     "noteId": note_id,
-                    "reaction": random.choice(WELCOME_REACTIONS),
+                    "reaction": reaction,
                     "i": TOKEN,
                 },
             )
+            print("[Renote] noteId", note_id)
             requests.post(
                 "https://misskey.io/api/notes/create",
                 json={
