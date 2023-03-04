@@ -14,44 +14,37 @@ WELCOME_REACTIONS = [
     ":blob_hello:",
 ]
 TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
-with open("ngwords.txt", "r", encoding="utf8") as f:
-    words = f.read()
-    NG_WORDS = [i for i in words.split("\n") if (i[0] != "-") and (i[0] != "#")]
-    print(NG_WORDS)
-    e_WORDS = [i[1:] for i in words.split("\n") if (i[0] == "-")]
-    print(e_WORDS)
-    exit()
 
 def on_message(ws, message):
     note_body = json.loads(message)["body"]["body"]
     note_id = note_body["id"]
     if not (note_body["text"] == None):
         print(note_body["text"])
-    user_info = requests.post(
-        "https://misskey.io/api/users/show",
-        json={
-            "username": note_body["user"]["username"],
-            "i": TOKEN,
-        },
-    )
-    print(user_info.json()["notesCount"], user_info.json()["notesCount"] == 1)
-    if user_info.json()["notesCount"] == 1:
-        requests.post(
-            "https://misskey.io/api/notes/reactions/create",
+        user_info = requests.post(
+            "https://misskey.io/api/users/show",
             json={
-                "noteId": note_id,
-                "reaction": random.choice(WELCOME_REACTIONS),
+                "username": note_body["user"]["username"],
                 "i": TOKEN,
             },
         )
-        requests.post(
-            "https://misskey.io/api/notes/create",
-            json={
-                "localOnly": True,
-                "renoteId": note_id,
-                "i": TOKEN,
-            },
-        )
+        print(user_info.json()["notesCount"], user_info.json()["notesCount"] == 1)
+        if user_info.json()["notesCount"] == 1:
+            requests.post(
+                "https://misskey.io/api/notes/reactions/create",
+                json={
+                    "noteId": note_id,
+                    "reaction": random.choice(WELCOME_REACTIONS),
+                    "i": TOKEN,
+                },
+            )
+            requests.post(
+                "https://misskey.io/api/notes/create",
+                json={
+                    "localOnly": True,
+                    "renoteId": note_id,
+                    "i": TOKEN,
+                },
+            )
 
 def on_error(ws, error):
     print(error)
