@@ -14,9 +14,23 @@ WELCOME_REACTIONS = [
     ":blob_hello:",
 ]
 TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
+with open("ngwords.txt", "r", encoding="utf8") as f:
+    words = f.read()
+    NG_WORDS = [i for i in words.split("\n") if (i[0] != "-") and (i[0] != "#")]
+    EXCLUDED_WORDS = [i[1:] for i in words.split("\n") if i[0] == "-"]
 
 def on_message(ws, message):
     note_body = json.loads(message)["body"]["body"]
+    # 脳筋コード
+    for i in NG_WORDS:
+        flag = False
+        if i in note_body["text"]:
+            for j in EXCLUDED_WORDS:
+                if j in note_body["text"]:
+                    flag = True
+                    break
+            if not flag:
+                return
     note_id = note_body["id"]
     if not (note_body["text"] == None):
         print(note_body["text"])
