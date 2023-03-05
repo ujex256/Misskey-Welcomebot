@@ -50,6 +50,8 @@ def on_message(ws, message):
                 reaction = ":send_money:"
             elif "yosano" in note_text or "与謝野晶子" in note_text:
                 reaction = ":yosano_akiko_is_always_watching_you:"
+            elif ":send_money:" in note_text:
+                reaction = ":is_all_scam:"
             elif "ろぐぼ" in note_text:
                 reaction = ":opera:"
             else:
