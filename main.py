@@ -48,6 +48,10 @@ def on_message(ws, message):
         if user_info.json()["notesCount"] == 1:
             if "レターパック" in note_text or ":5000" in note_text:
                 reaction = ":send_money:"
+            elif "yosano" in note_text or "与謝野晶子" in note_text:
+                reaction = ":yosano_akiko_is_always_watching_you:"
+            elif "ろぐぼ" in note_text:
+                reaction = ":opera:"
             else:
                 reaction = random.choice(WELCOME_REACTIONS)
             print(f"\n[Reaction Added] noteId>>{note_id}, reaction>>{reaction}")
