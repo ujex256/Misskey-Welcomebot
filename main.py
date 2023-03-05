@@ -26,16 +26,8 @@ def on_message(ws, message):
     if note_text is None:
         note_text = ""
 
-    # 脳筋コード
-    for i in NG_WORDS:
-        flag = False
-        if i in note_text:
-            for j in EXCLUDED_WORDS:
-                if j in note_text:
-                    flag = True
-                    break
-            if not flag:
-                return
+    if any(x in note_text for x in NG_WORDS) and not any(x in note_text for x in EXCLUDED_WORDS):
+        return
     if not (note_text == ""):
         print(note_text)
         user_info = requests.post(
