@@ -66,6 +66,7 @@ def update_replit_db(key: str, value, allow_duplicates: bool=True):
 
 def bot():
     def on_message(ws, message):
+        global have_note_user_ids
         note_body = json.loads(message)["body"]["body"]
         note_id = note_body["id"]
         note_text = note_body["text"]
@@ -101,7 +102,6 @@ def bot():
                 threading.Thread(target=add_reaction, args=(note_id, reaction,)).start()
                 threading.Thread(target=renote, args=(note_id,)).start()
             elif notes_count > 5:
-                global have_note_user_ids
                 global count
                 have_note_user_ids.append(user_info.json()["id"])
                 count += 1
