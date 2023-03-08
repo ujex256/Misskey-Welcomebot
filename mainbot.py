@@ -6,6 +6,7 @@ from collections import deque
 
 import requests
 import websocket
+from requests.exceptions import Timeout
 
 from replit import db
 
@@ -80,13 +81,18 @@ def bot():
 
         if not (note_text == ""):
             print(note_text)
-            user_info = requests.post(
-                "https://misskey.io/api/users/show",
-                json={
-                    "username": note_body["user"]["username"],
-                    "i": TOKEN,
-                },
-            )
+            try:
+                user_info = requests.post(
+                    "https://misskey.io/api/users/show",
+                    json={
+                        "username": note_body["user"]["username"],
+                        "i": TOKEN,
+                    },
+                    timeout=3
+                )
+            except Timeout:
+                print("api timeout")
+
             if (notes_count := user_info.json()["notesCount"]) == 1:
                 if "レターパック" in note_text or ":5000" in note_text:
                     reaction = ":send_money:"
