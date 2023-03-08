@@ -1,11 +1,12 @@
-import websocket
-import requests
 import json
-import random
 import os
-from replit import db
+import random
 from collections import deque
 
+import requests
+import websocket
+
+from replit import db
 
 HOST = "misskey.io"
 TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
