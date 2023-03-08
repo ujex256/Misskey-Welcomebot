@@ -20,8 +20,7 @@ with open("ngwords.txt", "r", encoding="utf8") as f:
     words = f.read()
     NG_WORDS = [i for i in words.split("\n") if (i[0] != "-") and (i[0] != "#")]
     EXCLUDED_WORDS = [i[1:] for i in words.split("\n") if i[0] == "-"]
-have_note_users_ids = list(db["have_note_user_ids"])
-
+have_note_users_ids = deque(db["have_note_user_ids"])
 count = 0
 
 def bot():
@@ -33,7 +32,9 @@ def bot():
             note_text = ""
     
         if any(x in note_text for x in NG_WORDS) and (not any(x in note_text for x in EXCLUDED_WORDS)):
-            return
+            return "ng word detected"
+        if note_body["userId"] in list(have_note_users_ids):
+            return "nope"
         if not (note_text == ""):
             print(note_text)
             user_info = requests.post(
@@ -77,8 +78,8 @@ def bot():
                 global count
                 have_note_users_ids.append(user_info.json()["id"])
                 count += 1
-                if count % 100 == 0 and len(db["have_note_user_ids"]) < 5000:
-                    print("febeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
+                if count % 100 == 0 and len(db["have_note_user_ids"]) < 150000:
+                    print("\n[DataBase Updated]\n")
                     db["have_note_user_ids"] = list(set(list(db["have_note_user_ids"]) + list(set(have_note_users_ids))))
 
     def on_error(ws, error):
