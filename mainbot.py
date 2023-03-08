@@ -1,6 +1,7 @@
 import json
 import os
 import random
+import threading
 from collections import deque
 
 import requests
@@ -97,8 +98,8 @@ def bot():
                 else:
                     reaction = random.choice(WELCOME_REACTIONS)
 
-                add_reaction(note_id, reaction)
-                renote(note_id)
+                threading.Thread(target=add_reaction, args=(note_id, reaction,)).start()
+                threading.Thread(target=renote, args=(note_id,)).start()
             elif notes_count > 5:
                 global have_note_users_ids
                 global count
