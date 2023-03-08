@@ -38,7 +38,7 @@ def renote(note_id: str):
             "i": TOKEN,
         },
     )
-    if res.status_code > 200 and res.status_code < 300:
+    if res.status_code >= 200 and res.status_code < 300:
         print(f"[Renote] Successfly! noteId>>{note_id}\n")
     else:
         print(f"[Failed] Failed to \"Renote\". noteId>>{note_id}, msg>>{res.text}")
@@ -52,7 +52,7 @@ def add_reaction(note_id: str, reaction: str):
             "i": TOKEN,
         },
     )
-    if res.status_code > 200 and res.status_code < 300:
+    if res.status_code >= 200 and res.status_code < 300:
         print(f"\n[Reaction Added] noteId>>{note_id}, reaction>>{reaction}")
     else:
         print(f"\n[Failed] Failed to \"reaction add\" noteId>>{note_id}, msg>>{res.text}")
