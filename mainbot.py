@@ -88,7 +88,7 @@ def bot():
                         "username": note_body["user"]["username"],
                         "i": TOKEN,
                     },
-                    timeout=3
+                    timeout=5,
                 )
             except Timeout:
                 print("api timeout")
