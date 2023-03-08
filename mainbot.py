@@ -7,6 +7,9 @@ from replit import db
 from collections import deque
 
 
+HOST = "misskey.io"
+TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
+
 WELCOME_REACTIONS = [
     ":youkoso:",
     ":youkoso_send_money:",
@@ -15,13 +18,49 @@ WELCOME_REACTIONS = [
     ":supertada:",
     ":yorosiku_onegai:",
 ]
-TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
 with open("ngwords.txt", "r", encoding="utf8") as f:
     words = f.read()
     NG_WORDS = [i for i in words.split("\n") if (i[0] != "-") and (i[0] != "#")]
     EXCLUDED_WORDS = [i[1:] for i in words.split("\n") if i[0] == "-"]
+del words
+
 have_note_users_ids = deque(db["have_note_user_ids"])
 count = 0
+
+def renote(note_id: str):
+    res = requests.post(
+        f"https://{HOST}/api/notes/create",
+        json={
+            "localOnly": True,
+            "renoteId": note_id,
+            "i": TOKEN,
+        },
+    )
+    if res.status_code > 200 and res.status_code < 300:
+        print(f"[Renote] Successfly! noteId>>{note_id}\n")
+    else:
+        print(f"[Failed] Failed to \"Renote\". noteId>>{note_id}, msg>>{res.text}")
+
+def add_reaction(note_id: str, reaction: str):
+    res = requests.post(
+        f"https://{HOST}/api/notes/reactions/create",
+        json={
+            "noteId": note_id,
+            "reaction": reaction,
+            "i": TOKEN,
+        },
+    )
+    if res.status_code > 200 and res.status_code < 300:
+        print(f"\n[Reaction Added] noteId>>{note_id}, reaction>>{reaction}")
+    else:
+        print(f"\n[Failed] Failed to \"reaction add\" noteId>>{note_id}, msg>>{res.text}")
+
+def update_replit_db(key: str, value, allow_duplicates: bool=True):
+    if isinstance(value, deque):
+        value = list(value)
+    if not allow_duplicates and isinstance(value, list):
+        value = list(set(value))
+    db[key] = value
 
 def bot():
     def on_message(ws, message):
@@ -30,11 +69,12 @@ def bot():
         note_text = note_body["text"]
         if note_text is None:
             note_text = ""
-    
+
         if any(x in note_text for x in NG_WORDS) and (not any(x in note_text for x in EXCLUDED_WORDS)):
             return "ng word detected"
         if note_body["userId"] in list(have_note_users_ids):
             return "nope"
+
         if not (note_text == ""):
             print(note_text)
             user_info = requests.post(
@@ -44,7 +84,7 @@ def bot():
                     "i": TOKEN,
                 },
             )
-            if user_info.json()["notesCount"] == 1:
+            if (notes_count := user_info.json()["notesCount"]) == 1:
                 if "レターパック" in note_text or ":5000" in note_text:
                     reaction = ":send_money:"
                 elif "yosano" in note_text or "与謝野晶子" in note_text:
@@ -55,32 +95,17 @@ def bot():
                     reaction = ":opera:"
                 else:
                     reaction = random.choice(WELCOME_REACTIONS)
-                print(f"\n[Reaction Added] noteId>>{note_id}, reaction>>{reaction}")
-                requests.post(
-                    "https://misskey.io/api/notes/reactions/create",
-                    json={
-                        "noteId": note_id,
-                        "reaction": reaction,
-                        "i": TOKEN,
-                    },
-                )
-                print("[Renote] noteId", note_id, "\n")
-                requests.post(
-                    "https://misskey.io/api/notes/create",
-                    json={
-                        "localOnly": True,
-                        "renoteId": note_id,
-                        "i": TOKEN,
-                    },
-                )
-            else:
+
+                add_reaction(note_id, reaction)
+                renote(note_id)
+            elif notes_count > 5:
                 global have_note_users_ids
                 global count
                 have_note_users_ids.append(user_info.json()["id"])
                 count += 1
-                if count % 100 == 0 and len(db["have_note_user_ids"]) < 150000:
+                if count % 100 == 0 and len(db["have_note_user_ids"]) < 100000:
+                    update_replit_db("have_note_user_ids", list(set(have_note_users_ids)), False)
                     print("\n[DataBase Updated]\n")
-                    db["have_note_user_ids"] = list(set(list(db["have_note_user_ids"]) + list(set(have_note_users_ids))))
 
     def on_error(ws, error):
         print(error)
