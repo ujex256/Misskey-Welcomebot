@@ -80,15 +80,14 @@ def bot():
                 if count % 100 == 0 and len(db["have_note_user_ids"]) < 5000:
                     print("febeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
                     db["have_note_user_ids"] = list(set(list(db["have_note_user_ids"]) + list(set(have_note_users_ids))))
-    
+
     def on_error(ws, error):
         print(error)
-    
+
     def on_close(ws, close_status_code, close_msg):
         print("WebSocket closed. Message:", close_msg)
         bot()
-    
-    
+
     streaming_api = f"wss://misskey.io/streaming?i={TOKEN}"
     # WebSocketの接続
     ws = websocket.WebSocketApp(streaming_api, on_message=on_message, on_error=on_error, on_close=on_close)
@@ -96,4 +95,3 @@ def bot():
         json.dumps({"type": "connect", "body": {"channel": "localTimeline", "id": "1"}})
     )
     ws.run_forever()
-    
