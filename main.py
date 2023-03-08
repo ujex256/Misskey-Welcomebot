@@ -26,7 +26,7 @@ def on_message(ws, message):
     if note_text is None:
         note_text = ""
 
-    if any(x in note_text for x in NG_WORDS) and not any(x in note_text for x in EXCLUDED_WORDS):
+    if any(x in note_text for x in NG_WORDS) and (not any(x in note_text for x in EXCLUDED_WORDS)):
         return
     if not (note_text == ""):
         print(note_text)
