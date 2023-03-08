@@ -26,7 +26,7 @@ with open("ngwords.txt", "r", encoding="utf8") as f:
     EXCLUDED_WORDS = [i[1:] for i in words.split("\n") if i[0] == "-"]
 del words
 
-have_note_users_ids = deque(db["have_note_user_ids"])
+have_note_user_ids = deque(db["have_note_user_ids"])
 count = 0
 
 def renote(note_id: str):
@@ -74,7 +74,7 @@ def bot():
 
         if any(x in note_text for x in NG_WORDS) and (not any(x in note_text for x in EXCLUDED_WORDS)):
             return "ng word detected"
-        if note_body["userId"] in list(have_note_users_ids):
+        if note_body["userId"] in list(have_note_user_ids):
             return "nope"
 
         if not (note_text == ""):
@@ -101,12 +101,12 @@ def bot():
                 threading.Thread(target=add_reaction, args=(note_id, reaction,)).start()
                 threading.Thread(target=renote, args=(note_id,)).start()
             elif notes_count > 5:
-                global have_note_users_ids
+                global have_note_user_ids
                 global count
-                have_note_users_ids.append(user_info.json()["id"])
+                have_note_user_ids.append(user_info.json()["id"])
                 count += 1
                 if count % 100 == 0 and len(db["have_note_user_ids"]) < 100000:
-                    update_replit_db("have_note_user_ids", list(set(have_note_users_ids)), False)
+                    update_replit_db("have_note_user_ids", list(set(have_note_user_ids)), False)
                     print("\n[DataBase Updated]\n")
 
     def on_error(ws, error):
