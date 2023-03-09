@@ -50,9 +50,9 @@ def renote(note_id: str):
         },
     )
     if res.status_code >= 200 and res.status_code < 300:
-        logger.info(f"Renoted! noteId>>{note_id}")
-    else:a
-        logger.error(f"Renote failed noteId>>{note_id}, msg>>{res.text}")
+        logger.info(f"Renoted! noteId: {note_id}")
+    else:
+        logger.error(f"Renote failed noteId: {note_id}, msg: {res.text}")
 
 def add_reaction(note_id: str, reaction: str):
     res = requests.post(
@@ -64,9 +64,9 @@ def add_reaction(note_id: str, reaction: str):
         },
     )
     if res.status_code >= 200 and res.status_code < 300:
-        logger.info(f"Reaction added noteId>>{note_id}, reaction>>{reaction}")
+        logger.info(f"Reaction added noteId: {note_id}, reaction: {reaction}")
     else:
-        logger.error(f"Failed to add reaction noteId>>{note_id}, msg>>{res.text}")
+        logger.error(f"Failed to add reaction noteId: {note_id}, msg: {res.text}")
 
 def update_replit_db(key: str, value, allow_duplicates: bool=True):
     if isinstance(value, deque):
