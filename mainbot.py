@@ -25,7 +25,6 @@ with open("ngwords.txt", "r", encoding="utf8") as f:
     words = f.read()
     NG_WORDS = [i for i in words.split("\n") if (i[0] != "-") and (i[0] != "#")]
     EXCLUDED_WORDS = [i[1:] for i in words.split("\n") if i[0] == "-"]
-del words
 
 have_note_user_ids = deque(db["have_note_user_ids"])
 count = 0
