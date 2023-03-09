@@ -2,6 +2,7 @@ import json
 import os
 import random
 import threading
+import logging
 from collections import deque
 
 import requests
@@ -29,6 +30,16 @@ with open("ngwords.txt", "r", encoding="utf8") as f:
 have_note_user_ids = deque(db["have_note_user_ids"])
 count = 0
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
+handler = logging.StreamHandler()
+handler.setFormatter(logging.Formatter("%(asctime)s - [%(levelname)s] - %(message)s",
+                                       "%Y-%m-%d %H:%M"
+                     ))
+logger.addHandler(handler)
+
+
 def renote(note_id: str):
     res = requests.post(
         f"https://{HOST}/api/notes/create",
@@ -39,9 +50,9 @@ def renote(note_id: str):
         },
     )
     if res.status_code >= 200 and res.status_code < 300:
-        print(f"[Renote] Successfly! noteId>>{note_id}\n")
+        logger.info(f"Renoted! noteId>>{note_id}")
     else:
-        print(f"[Failed] Failed to \"Renote\". noteId>>{note_id}, msg>>{res.text}")
+        logger.error(f"Renote failed noteId>>{note_id}, msg>>{res.text}")
 
 def add_reaction(note_id: str, reaction: str):
     res = requests.post(
@@ -53,9 +64,9 @@ def add_reaction(note_id: str, reaction: str):
         },
     )
     if res.status_code >= 200 and res.status_code < 300:
-        print(f"\n[Reaction Added] noteId>>{note_id}, reaction>>{reaction}")
+        logger.info(f"Reaction added noteId>>{note_id}, reaction>>{reaction}")
     else:
-        print(f"\n[Failed] Failed to \"reaction add\" noteId>>{note_id}, msg>>{res.text}")
+        logger.error(f"Failed to add reaction noteId>>{note_id}, msg>>{res.text}")
 
 def update_replit_db(key: str, value, allow_duplicates: bool=True):
     if isinstance(value, deque):
@@ -74,9 +85,11 @@ def bot():
             note_text = ""
 
         if any(x in note_text for x in NG_WORDS) and (not any(x in note_text for x in EXCLUDED_WORDS)):
+            logger.info("Detected NG word")
             return "ng word detected"
         if note_body["userId"] in list(have_note_user_ids):
-            return "nope"
+            logger.debug("Skiped api request because it was registered in \"DB\"")
+            return "skipped"
 
         if not (note_text == ""):
             print(note_text)
@@ -90,7 +103,7 @@ def bot():
                     timeout=5,
                 )
             except Timeout:
-                print("api timeout")
+                logger.warning("api timeout")
 
             if (notes_count := user_info.json()["notesCount"]) == 1:
                 if "レターパック" in note_text or ":5000" in note_text:
@@ -112,13 +125,13 @@ def bot():
                 count += 1
                 if count % 100 == 0 and len(db["have_note_user_ids"]) < 100000:
                     update_replit_db("have_note_user_ids", list(set(have_note_user_ids)), False)
-                    print("\n[DataBase Updated]\n")
+                    logger.info(f"DataBase Updated count:{len(db['have_note_user_ids'])}")
 
     def on_error(ws, error):
-        print(error)
+        logger.warning(error)
 
-    def on_close(ws, close_status_code, close_msg):
-        print("WebSocket closed. Message:", close_msg)
+    def on_close(ws, status_code, msg):
+        logger.error(f"WebSocket closed. code:{status_code} msg:{msg}")
         bot()
 
     streaming_api = f"wss://misskey.io/streaming?i={TOKEN}"
