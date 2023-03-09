@@ -51,7 +51,7 @@ def renote(note_id: str):
     )
     if res.status_code >= 200 and res.status_code < 300:
         logger.info(f"Renoted! noteId>>{note_id}")
-    else:
+    else:a
         logger.error(f"Renote failed noteId>>{note_id}, msg>>{res.text}")
 
 def add_reaction(note_id: str, reaction: str):
