@@ -95,7 +95,7 @@ def bot():
             print(note_text)
             try:
                 user_info = requests.post(
-                    "https://misskey.io/api/users/show",
+                    f"https://{HOST}/api/users/show",
                     json={
                         "username": note_body["user"]["username"],
                         "i": TOKEN,
@@ -128,13 +128,13 @@ def bot():
                     logger.info(f"DataBase Updated count:{len(db['have_note_user_ids'])}")
 
     def on_error(ws, error):
-        logger.warning(error)
+        logger.warning(str(error))
 
     def on_close(ws, status_code, msg):
         logger.error(f"WebSocket closed. code:{status_code} msg:{msg}")
         bot()
 
-    streaming_api = f"wss://misskey.io/streaming?i={TOKEN}"
+    streaming_api = f"wss://{HOST}/streaming?i={TOKEN}"
     # WebSocketの接続
     ws = websocket.WebSocketApp(streaming_api, on_message=on_message, on_error=on_error, on_close=on_close)
     ws.on_open = lambda ws: ws.send(
