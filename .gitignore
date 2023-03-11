@@ -1,4 +1,8 @@
 env
+__pycache__
+utils
 a.json
 replit.py
-__pycache__
+ngWords_Hira.txt
+ngWords_Kana.txt
+ngWords_Romaji.txt
