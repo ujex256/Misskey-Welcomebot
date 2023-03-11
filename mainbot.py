@@ -49,7 +49,7 @@ def renote(note_id: str):
             "i": TOKEN,
         },
     )
-    if res.status_code >= 200 and res.status_code < 300:
+    if res.ok:
         logger.info(f"Renoted! noteId: {note_id}")
     else:
         logger.error(f"Renote failed noteId: {note_id}, msg: {res.text}")
@@ -63,7 +63,7 @@ def add_reaction(note_id: str, reaction: str):
             "i": TOKEN,
         },
     )
-    if res.status_code >= 200 and res.status_code < 300:
+    if res.ok:
         logger.info(f"Reaction added noteId: {note_id}, reaction: {reaction}")
     else:
         logger.error(f"Failed to add reaction noteId: {note_id}, msg: {res.text}")
