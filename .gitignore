@@ -1,8 +1,8 @@
 env
 __pycache__
-utils
 a.json
 replit.py
+# NGワードは非公開
 ngWords.txt
 ngWords_Hira.txt
 ngWords_Kana.txt
