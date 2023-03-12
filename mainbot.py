@@ -84,7 +84,7 @@ def bot():
             note_text = ""
 
         if _ng.match(note_text):
-            logger.info("Detected NG word")
+            logger.info(f"Detected NG word. noteId: {note_id}, word: {_ng.why(note_text)}")
             return "ng word detected"
         if note_body["userId"] in set(have_note_user_ids):
             logger.debug("Skiped api request because it was registered in \"DB\"")
