@@ -86,7 +86,7 @@ def bot():
         if _ng.match(note_text):
             logger.info("Detected NG word")
             return "ng word detected"
-        if note_body["userId"] in list(have_note_user_ids):
+        if note_body["userId"] in set(have_note_user_ids):
             logger.debug("Skiped api request because it was registered in \"DB\"")
             return "skipped"
 
