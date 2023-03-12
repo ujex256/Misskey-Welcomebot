@@ -8,8 +8,10 @@ from collections import deque
 import requests
 import websocket
 from requests.exceptions import Timeout
-
 from replit import db
+
+from ngwords import NGWords
+
 
 HOST = "misskey.io"
 TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
@@ -22,10 +24,7 @@ WELCOME_REACTIONS = [
     ":supertada:",
     ":yorosiku_onegai:",
 ]
-with open("ngwords.txt", "r", encoding="utf8") as f:
-    words = f.read()
-    NG_WORDS = [i for i in words.split("\n") if (i[0] != "-") and (i[0] != "#")]
-    EXCLUDED_WORDS = [i[1:] for i in words.split("\n") if i[0] == "-"]
+_ng = NGWords("ngWords.txt")
 
 have_note_user_ids = deque(db["have_note_user_ids"])
 count = 0
@@ -84,7 +83,7 @@ def bot():
         if note_text is None:
             note_text = ""
 
-        if any(x in note_text for x in NG_WORDS) and (not any(x in note_text for x in EXCLUDED_WORDS)):
+        if _ng.match(note_text):
             logger.info("Detected NG word")
             return "ng word detected"
         if note_body["userId"] in list(have_note_user_ids):
