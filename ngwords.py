@@ -46,6 +46,7 @@ class NGWords:
         for i in range(4):
             with self._path.parent.joinpath(self.FILENAMES[i]).open(encoding="utf8") as f:
                 data = f.read().split("\n")
+            data = [i for i in data if i != ""]
             self._ng[keys[i]] = {j for j in data if (j[0] != "-") and (j[0] != "#")}
             self._allow[keys[i]] = {j[1:] for j in data if j[0] == "-"}
 
