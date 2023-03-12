@@ -90,5 +90,5 @@ def set_default_name(name):
     NGWords.set_default_name(name)
 
 if __name__ == "__main__":
-    print(NGWords(r"ngWords.txt").match("土日祝は割と1日1食とかしてる"))
+    print(NGWords(r"ngWords.txt").why("土日祝は割と1日1食とかしてる"))
     print(NGWords(r"ngWords_Hiraassssssss.txt").all_ng_words)  # FileNotFound
