@@ -24,7 +24,7 @@ WELCOME_REACTIONS = [
     ":supertada:",
     ":yorosiku_onegai:",
 ]
-_ng = NGWords("ngWords.txt")
+_ng = NGWords("ng_words/ngWords.txt")
 
 have_note_user_ids = deque(db["have_note_user_ids"])
 count = 0
