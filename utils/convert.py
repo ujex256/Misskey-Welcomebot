@@ -40,9 +40,9 @@ def toRomaji(text) -> list:
 
 if __name__ == "__main__":
     try:
-        f = open("../ngwords.txt", "r", encoding="utf8")
+        f = open("../ngWords.txt", "r", encoding="utf8")
     except FileNotFoundError:
-        f = open("./ngwords.txt", "r", encoding="utf8")
+        f = open("./ngWords.txt", "r", encoding="utf8")
     _words = f.read()
     f.close()
 
