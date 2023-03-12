@@ -1,5 +1,7 @@
 env
 __pycache__
+.vscode
+
 a.json
 replit.py
 # NGワードは非公開
