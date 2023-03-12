@@ -53,6 +53,11 @@ class NGWords:
         ng = self.all_ng_words
         allow = self.all_excluded_words
         return any(x in text for x in ng) and (not any(x in text for x in allow))
+    
+    def why(self, txt):
+        for i in self.all_ng_words:
+            if i in txt:
+                return i
 
     @property
     def all_ng_words(self) -> set:
@@ -85,5 +90,5 @@ def set_default_name(name):
     NGWords.set_default_name(name)
 
 if __name__ == "__main__":
-    print(NGWords(r"ngWords.txt").match("r-18"))
+    print(NGWords(r"ngWords.txt").match("土日祝は割と1日1食とかしてる"))
     print(NGWords(r"ngWords_Hiraassssssss.txt").all_ng_words)  # FileNotFound
