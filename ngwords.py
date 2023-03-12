@@ -10,6 +10,8 @@ class NGWords:
     ngWords_Kana.txt
     ngWords_Romaji.txt
     の4つが必要
+
+    initに渡す名前はngWords.txt(ベース)です。
     """
 
     DEFAULT_NAME = "ngWords.txt"
@@ -22,7 +24,7 @@ class NGWords:
         self._allow = self._ng.copy()
         self._initialize_words_dict()
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> dict:
         if (key := key.lower()) == "ng":
             return self._ng
         elif key == "excluded":
@@ -30,15 +32,16 @@ class NGWords:
         else: raise KeyError('"ng"か"excluded"を指定してください')
 
     @classmethod
-    def set_default_name(cls, name):
+    def set_default_name(cls, name: str) -> list:
         cls.DEFAULT_NAME = name
         cls.FILENAMES = [name]
         types = ["Hira", "Kana", "Romaji"]
         s = list(os.path.splitext(name))
         for i in types:
             cls.FILENAMES.append(f"{s[0]}_{i}{s[1]}")
+        return cls.FILENAMES
 
-    def _initialize_words_dict(self):
+    def _initialize_words_dict(self) -> None:
         keys = list(self._ng.keys())
         for i in range(4):
             with self._path.parent.joinpath(self.FILENAMES[i]).open(encoding="utf8") as f:
@@ -46,7 +49,7 @@ class NGWords:
             self._ng[keys[i]] = {j for j in data if (j[0] != "-") and (j[0] != "#")}
             self._allow[keys[i]] = {j[1:] for j in data if j[0] == "-"}
 
-    def match(self, text):
+    def match(self, text) -> bool:
         ng = self.all_ng_words
         allow = self.all_excluded_words
         return any(x in text for x in ng) and (not any(x in text for x in allow))
@@ -83,4 +86,4 @@ def set_default_name(name):
 
 if __name__ == "__main__":
     print(NGWords(r"ngWords.txt").match("r-18"))
-    print(NGWords(r"ngWords_Hiraassssssss.txt").all_ng_words)
+    print(NGWords(r"ngWords_Hiraassssssss.txt").all_ng_words)  # FileNotFound
