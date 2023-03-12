@@ -54,7 +54,7 @@ if __name__ == "__main__":
     # なんかかっこいい(?)
     for mode in a:
         data = map(lambda x: x + "\n", [functions[mode](word) for word in words])
-        data = list(filter(lambda x: not (x.isascii() or x in words), data))
+        data = list(filter(lambda x: not (x.isascii() or x[:-1] in words), data))
         data[-1] = data[-1][:-1]
         with open(f"ngWords_{mode}.txt", "w", encoding="utf8") as f:
             f.writelines(data)
