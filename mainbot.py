@@ -27,7 +27,6 @@ WELCOME_REACTIONS = [
 _ng = NGWords("ng_words/ngWords.txt")
 with open("response.json", "r", encoding="utf8") as f:
     response_emojis = json.loads(f.read())
-    print(response_emojis)
 
 have_note_user_ids = deque(db["have_note_user_ids"])
 count = 0
@@ -108,14 +107,14 @@ def bot():
                 logger.warning("api timeout")
 
             if (notes_count := user_info.json()["notesCount"]) == 1:
-                if "レターパック" in note_text or ":5000" in note_text:
-                    reaction = ":send_money:"
-                elif "yosano" in note_text or "与謝野晶子" in note_text:
-                    reaction = ":yosano_akiko_is_always_watching_you:"
-                elif ":send_money:" in note_text:
-                    reaction = ":is_all_scam:"
-                elif "ろぐぼ" in note_text:
-                    reaction = ":opera:"
+                for i in response_emojis:
+                    if any(j in note_text for j in i["keywords"]):
+                        if isinstance(i["emoji"], list):
+                            reaction = random.choice(i["emoji"])
+                            break
+                        else:
+                            reaction = i["emoji"]
+                            break
                 else:
                     reaction = random.choice(WELCOME_REACTIONS)
 
