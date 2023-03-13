@@ -63,9 +63,9 @@ def get_user_info(user_name: str="", user_id: str="") -> dict | None:
             "i": TOKEN,
         }
         if user_id:
-            body.pop("userId")
-        else:
             body.pop("username")
+        else:
+            body.pop("userId")
         user_info = requests.post(
             f"https://{HOST}/api/users/show",
             json=body, timeout=5,
