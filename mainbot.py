@@ -5,12 +5,11 @@ import threading
 import logging
 from collections import deque
 
-import requests
 import websocket
-from requests.exceptions import Timeout
 from replit import db
 
 from ngwords import NGWords
+from note_action import renote, add_reaction, update_db, get_user_info
 
 
 HOST = "misskey.io"
@@ -40,42 +39,6 @@ handler.setFormatter(logging.Formatter("%(asctime)s - [%(levelname)s] - %(messag
                      ))
 logger.addHandler(handler)
 
-
-def renote(note_id: str):
-    res = requests.post(
-        f"https://{HOST}/api/notes/create",
-        json={
-            "localOnly": True,
-            "renoteId": note_id,
-            "i": TOKEN,
-        },
-    )
-    if res.ok:
-        logger.info(f"Renoted! noteId: {note_id}")
-    else:
-        logger.error(f"Renote failed noteId: {note_id}, msg: {res.text}")
-
-def add_reaction(note_id: str, reaction: str):
-    res = requests.post(
-        f"https://{HOST}/api/notes/reactions/create",
-        json={
-            "noteId": note_id,
-            "reaction": reaction,
-            "i": TOKEN,
-        },
-    )
-    if res.ok:
-        logger.info(f"Reaction added noteId: {note_id}, reaction: {reaction}")
-    else:
-        logger.error(f"Failed to add reaction noteId: {note_id}, msg: {res.text}")
-
-def update_replit_db(key: str, value, allow_duplicates: bool=True):
-    if isinstance(value, deque):
-        value = list(value)
-    if not allow_duplicates and isinstance(value, list):
-        value = list(set(value))
-    db[key] = value
-
 def bot():
     def on_message(ws, message):
         global have_note_user_ids
@@ -94,19 +57,9 @@ def bot():
 
         if not (note_text == ""):
             print(note_text)
-            try:
-                user_info = requests.post(
-                    f"https://{HOST}/api/users/show",
-                    json={
-                        "username": note_body["user"]["username"],
-                        "i": TOKEN,
-                    },
-                    timeout=5,
-                )
-            except Timeout:
-                logger.warning("api timeout")
+            user_info = get_user_info(user_id=note_body["userId"])
 
-            if (notes_count := user_info.json()["notesCount"]) == 1:
+            if (notes_count := user_info["notesCount"]) == 1:
                 for i in response_emojis:
                     if any(j in note_text for j in i["keywords"]):
                         if isinstance(i["emoji"], list):
@@ -122,10 +75,10 @@ def bot():
                 threading.Thread(target=renote, args=(note_id,)).start()
             elif notes_count > 5:
                 global count
-                have_note_user_ids.append(user_info.json()["id"])
+                have_note_user_ids.append(user_info["id"])
                 count += 1
                 if count % 100 == 0 and len(db["have_note_user_ids"]) < 100000:
-                    update_replit_db("have_note_user_ids", list(set(have_note_user_ids)), False)
+                    update_db("have_note_user_ids", list(set(have_note_user_ids)), False)
                     logger.info(f"DataBase Updated count:{len(db['have_note_user_ids'])}")
 
     def on_error(ws, error):
