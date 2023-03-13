@@ -1,22 +1,18 @@
 import requests
 import logging
+import logging.config
 import os
 from requests import Timeout
 from collections import deque
 
 from replit import db
 
+
 HOST = "misskey.io"
 TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
 
+logging.config.fileConfig("logging.ini")
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-handler = logging.StreamHandler()
-handler.setFormatter(logging.Formatter("%(asctime)s - [%(levelname)s] - %(message)s",
-                                       "%Y-%m-%d %H:%M:%S"
-                     ))
-logger.addHandler(handler)
 
 def renote(note_id: str) -> None:
     res = requests.post(

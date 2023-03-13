@@ -3,6 +3,7 @@ import os
 import random
 import threading
 import logging
+import logging.config
 from collections import deque
 
 import websocket
@@ -30,14 +31,8 @@ with open("response.json", "r", encoding="utf8") as f:
 have_note_user_ids = deque(db["have_note_user_ids"])
 count = 0
 
+logging.config.fileConfig("logging.ini")
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-
-handler = logging.StreamHandler()
-handler.setFormatter(logging.Formatter("%(asctime)s - [%(levelname)s] - %(message)s",
-                                       "%Y-%m-%d %H:%M:%S"
-                     ))
-logger.addHandler(handler)
 
 def bot():
     def on_message(ws, message):
