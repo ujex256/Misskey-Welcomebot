@@ -1,6 +1,18 @@
 [
     {
-        "keyword": [],
-        "reaction": ""
+        "keywords": ["レターパック", ":5000"],
+        "emoji": ":send_money:"
+    },
+    {
+        "keywords": ["yosano", "与謝野晶子"],
+        "emoji": ":yosano_akiko_is_always_watching_you:"
+    },
+    {
+        "keywords": [":send_money:"],
+        "emoji": ":is_all_scam:"
+    },
+    {
+        "keywords": ["ろぐぼ", "ログインボーナス"],
+        "emoji": ":opera:"
     }
 ]
