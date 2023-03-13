@@ -25,6 +25,9 @@ WELCOME_REACTIONS = [
     ":yorosiku_onegai:",
 ]
 _ng = NGWords("ng_words/ngWords.txt")
+with open("response.json", "r", encoding="utf8") as f:
+    response_emojis = json.loads(f.read())
+    print(response_emojis)
 
 have_note_user_ids = deque(db["have_note_user_ids"])
 count = 0
