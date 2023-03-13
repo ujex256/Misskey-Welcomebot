@@ -1,12 +1,12 @@
-import requests
+import os
 import logging
 import logging.config
-import os
-from requests import Timeout
 from collections import deque
 
-from replit import db
+import requests
+from requests import Timeout
 
+from replit import db
 
 HOST = "misskey.io"
 TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]

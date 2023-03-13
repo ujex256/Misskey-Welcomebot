@@ -1,6 +1,7 @@
 import pathlib
 import os
 
+
 class NGWords:
     """
     NGワードのファイルを読み込む

@@ -1,7 +1,7 @@
 import json
 import os
-import random
 import threading
+import random
 import logging
 import logging.config
 from collections import deque
@@ -10,8 +10,7 @@ import websocket
 from replit import db
 
 from ngwords import NGWords
-from note_action import renote, add_reaction, update_db, get_user_info
-
+from note_action import add_reaction, get_user_info, renote, update_db
 
 HOST = "misskey.io"
 TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
