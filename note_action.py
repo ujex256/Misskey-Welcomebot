@@ -4,15 +4,15 @@ import logging.config
 from collections import deque
 
 import requests
+import coloredlogs
 from requests import Timeout
-
 from replit import db
 
 HOST = "misskey.io"
 TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
 
-logging.config.fileConfig("logging.ini")
 logger = logging.getLogger(__name__)
+coloredlogs.install(logger=logger)
 
 def renote(note_id: str) -> None:
     res = requests.post(

@@ -7,7 +7,11 @@ import logging.config
 from collections import deque
 
 import websocket
+import coloredlogs
 from replit import db
+
+from logging_styles import set_default
+set_default()
 
 from ngwords import NGWords
 from note_action import add_reaction, get_user_info, renote, update_db
@@ -30,8 +34,8 @@ with open("response.json", "r", encoding="utf8") as f:
 have_note_user_ids = deque(db["have_note_user_ids"])
 count = 0
 
-logging.config.fileConfig("logging.ini")
 logger = logging.getLogger(__name__)
+coloredlogs.install(logger=logger)
 
 def bot():
     def on_message(ws, message):
