@@ -39,6 +39,11 @@ def toRomaji(text) -> list:
     return ["".join(result), "".join(result2)]
 
 if __name__ == "__main__":
+    if (ans := input("ファイルが上書きされます。本当に実行しますか? [Y/n]").lower()) == "n":
+        exit()
+    elif ans != "y":
+        print("ふぇ?")
+        exit()
     try:
         f = open("../ngWords.txt", "r", encoding="utf8")
     except FileNotFoundError:
@@ -67,3 +72,4 @@ if __name__ == "__main__":
                 romaji.append(i)
         romaji[-1] = romaji[-1][:-1]
         f.writelines(romaji)
+    print("\033[91m"+"警告: 出力したファイル(特にローマ字)は意図していないものまで入っている可能性があるので必ず確認してください！"+"\033[0m")
