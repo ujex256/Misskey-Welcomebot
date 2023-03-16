@@ -10,11 +10,11 @@ import websocket
 import coloredlogs
 from replit import db
 
-from logging_styles import set_default
+from .logging_styles import set_default
 set_default()
 
-from ngwords import NGWords
-from note_action import add_reaction, get_user_info, renote, update_db
+from .ngwords import NGWords
+from .note_action import add_reaction, get_user_info, renote, update_db
 
 HOST = "misskey.io"
 TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
@@ -27,8 +27,8 @@ WELCOME_REACTIONS = [
     ":supertada:",
     ":yorosiku_onegai:",
 ]
-_ng = NGWords("ng_words/ngWords.txt")
-with open("response.json", "r", encoding="utf8") as f:
+_ng = NGWords("./ng_words/ngWords.txt")
+with open("./response.json", "r", encoding="utf8") as f:
     response_emojis = json.loads(f.read())
 
 have_note_user_ids = deque(db["have_note_user_ids"])
