@@ -76,7 +76,7 @@ def bot():
                 have_note_user_ids.append(user_info["id"])
                 count += 1
                 if count % 100 == 0 and len(db["have_note_user_ids"]) < 100000:
-                    update_db("have_note_user_ids", list(set(have_note_user_ids)), False)
+                    update_db("have_note_user_ids", list(have_note_user_ids), False)
                     logger.info(f"DataBase Updated count:{len(db['have_note_user_ids'])}")
 
     def on_error(ws, error):
