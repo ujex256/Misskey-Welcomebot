@@ -2,7 +2,7 @@ import multiprocessing
 from flask import Flask
 
 from src.mainbot import bot
-a
+
 app = Flask(__name__)
 
 p = multiprocessing.Process(target=bot)
