@@ -1,15 +1,18 @@
-import os
 import logging
 import logging.config
+from os import getenv
 from collections import deque
 
 import requests
 import coloredlogs
+from dotenv import load_dotenv
 from requests import Timeout
 from replit import db
 
-HOST = "misskey.io"
-TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
+
+load_dotenv()
+HOST = getenv("HOST")
+TOKEN = getenv("MISSKEY-ACCESSTOKEN")
 
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)

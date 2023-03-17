@@ -1,10 +1,12 @@
 env
 __pycache__
 .vscode
-
 a.json
-replit.py
 test.py
+
+replit.py
+.env
+
 # NGワードは非公開
 ngWords.txt
 ngWords_Hira.txt

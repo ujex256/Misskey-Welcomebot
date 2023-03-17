@@ -1,5 +1,4 @@
 import json
-import os
 import threading
 import random
 import logging
@@ -14,10 +13,8 @@ from .logging_styles import set_default
 set_default()
 
 from .ngwords import NGWords
-from .note_action import add_reaction, get_user_info, renote, update_db
+from .note_action import (HOST, TOKEN, add_reaction, get_user_info, renote, update_db)
 
-HOST = "misskey.io"
-TOKEN = os.environ["MISSKEY-ACCESSTOKEN"]
 
 WELCOME_REACTIONS = [
     ":youkoso:",
@@ -88,7 +85,8 @@ def bot():
 
     streaming_api = f"wss://{HOST}/streaming?i={TOKEN}"
     # WebSocketの接続
-    ws = websocket.WebSocketApp(streaming_api, on_message=on_message, on_error=on_error, on_close=on_close)
+    ws = websocket.WebSocketApp(streaming_api, on_message=on_message,
+                                on_error=on_error, on_close=on_close)
     ws.on_open = lambda ws: ws.send(
         json.dumps({"type": "connect", "body": {"channel": "localTimeline", "id": "1"}})
     )
