@@ -1,5 +1,5 @@
-import pathlib
 import os
+import pathlib
 
 
 class NGWords:
@@ -55,11 +55,12 @@ class NGWords:
         ng = self.all_ng_words
         allow = self.all_excluded_words
         return any(x in text for x in ng) and (not any(x in text for x in allow))
-    
-    def why(self, txt):
+
+    def why(self, text) -> str | None:
         for i in self.all_ng_words:
-            if i in txt:
+            if i in text:
                 return i
+        return None
 
     @property
     def all_ng_words(self) -> set:
