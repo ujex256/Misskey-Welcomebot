@@ -12,7 +12,7 @@ from replit import db
 
 load_dotenv()
 HOST = getenv("HOST")
-TOKEN = getenv("MISSKEY-ACCESSTOKEN")
+TOKEN = getenv("SECRET-TOKEN")
 
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)

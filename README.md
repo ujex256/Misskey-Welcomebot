@@ -22,7 +22,7 @@ MisskeyのようこそBotのリポジトリです。
 1. `sample.env`の名前を`.env`に変更し、中を編集します。
 ```sh
 HOST=misskey.io
-MISSKEY-ACCESSTOKEN=token
+SECRET-TOKEN=token
 ```
 2. response.jsonの編集
 `keywords`にトリガーとなるキーワードを**配列**で指定してください。
