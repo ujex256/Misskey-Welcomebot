@@ -7,15 +7,18 @@
 MisskeyのようこそBotのリポジトリです。
 </div>
 
-**注意:これはReplitでの動作を想定しています。replit以外で動作させる場合は(branch name)を使用してください。**
+**注意:これはReplitでの動作を想定しています。Replit以外で動作させる場合は[no-replitブランチ](https://github.com/ujex256/Misskey-Welcomebot/tree/no-replit)を使用してください。**
 
 ## 何のBot?
 ローカルタイムライン(TL)に流れてきた初ノートにリアクションをつけたりリノートします。
-(APIへのリクエストを削減するために、ReplitのDBにユーザーIDを保存しています。)
 
 条件
 - 投稿したユーザーのノート数が1(初ノート)
 - NGワードが含まれていない
+
+
+APIへのリクエストを削減するために、ReplitのDBにユーザーIDを保存しています。
+Replitを使用しない場合は、dataディレクトリの中に`users.pickle`というファイルが作成され、そこに保存されます。
 <br /><br />
 
 ## 設定
