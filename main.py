@@ -4,14 +4,13 @@ from replit import web
 
 from src.mainbot import bot
 
-app = Flask(__name__)
+if __name__ == "__main__":
+    app = Flask(__name__)
 
-p = multiprocessing.Process(target=bot)
-p.start()
+    @app.route('/')
+    def index():
+        return 'Pong'
 
-
-@app.route('/')
-def index():
-    return 'Pong'
-
-web.run(app)
+    p = multiprocessing.Process(target=bot)
+    p.start()
+    web.run(app)
