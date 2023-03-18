@@ -47,3 +47,5 @@ SECRET-TOKEN=token
     },
 ]
 ```
+## クレジット
+ようこそBotのアイコン: [**@nullkal**](https://misskey.io/notes/9bhuk9wlo9)
