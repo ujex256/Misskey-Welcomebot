@@ -1,5 +1,6 @@
 import multiprocessing
 from flask import Flask
+from replit import web
 
 from src.mainbot import bot
 
@@ -13,5 +14,4 @@ p.start()
 def index():
     return 'Pong'
 
-
-app.run(host='0.0.0.0', port=81)
+web.run(app)
