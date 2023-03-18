@@ -1,3 +1,4 @@
+import pickle
 import logging
 import logging.config
 from os import getenv
@@ -7,7 +8,6 @@ import requests
 import coloredlogs
 from dotenv import load_dotenv
 from requests import Timeout
-from replit import db
 
 
 load_dotenv()
@@ -46,11 +46,10 @@ def add_reaction(note_id: str, reaction: str) -> None:
         logger.error(f"Failed to add reaction noteId: {note_id}, msg: {res.text}")
 
 def update_db(key: str, value, allow_duplicates: bool=True) -> None:
-    if isinstance(value, deque):
-        value = list(value)
-    if not allow_duplicates and isinstance(value, list):
-        value = list(set(value))
-    db[key] = value
+    if not allow_duplicates and isinstance(value, deque):
+        value = deque(set(value))
+    with open("./data/users.pickle", "wb") as f:
+        pickle.dump(value, f)
 
 def get_user_info(user_name: str="", user_id: str="") -> dict | None:
     if user_name and user_id:

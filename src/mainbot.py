@@ -1,13 +1,13 @@
 import threading
 import json
 import random
+import pickle
 import logging
 import logging.config
 from collections import deque
 
 import websocket
 import coloredlogs
-from replit import db
 
 from .logging_styles import set_default
 set_default()
@@ -28,7 +28,11 @@ _ng = NGWords("./ng_words/ngWords.txt")
 with open("./response.json", "r", encoding="utf8") as f:
     response_emojis = json.loads(f.read())
 
-have_note_user_ids = deque(db["have_note_user_ids"])
+try:
+    with open('./data/users.pickle', "rb") as f:
+        have_note_user_ids = pickle.load(f)
+except FileNotFoundError:
+    have_note_user_ids = deque()
 count = 0
 
 logger = logging.getLogger(__name__)
@@ -72,9 +76,9 @@ def bot():
                 global count
                 have_note_user_ids.append(user_info["id"])
                 count += 1
-                if count % 100 == 0 and len(db["have_note_user_ids"]) < 100000:
-                    update_db("have_note_user_ids", list(have_note_user_ids), False)
-                    logger.info(f"DataBase Updated count:{len(db['have_note_user_ids'])}")
+                if count % 100 == 0 and len(have_note_user_ids) < 100000:
+                    update_db("have_note_user_ids", have_note_user_ids, False)
+                    logger.info(f"DataBase Updated count:{len(have_note_user_ids)}")
 
     def on_error(ws, error):
         logger.warning(str(error))

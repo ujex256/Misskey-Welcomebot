@@ -6,7 +6,7 @@ test.py
 
 replit.py
 .env
-
+data/users.pickle
 # NGワードは非公開
 ngWords.txt
 ngWords_Hira.txt
