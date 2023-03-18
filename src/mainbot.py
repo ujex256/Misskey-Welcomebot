@@ -38,55 +38,56 @@ count = 0
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)
 
+def on_message(ws, message):
+    global have_note_user_ids
+    note_body = json.loads(message)["body"]["body"]
+    note_id = note_body["id"]
+    note_text = note_body["text"]
+    if note_text is None:
+        note_text = ""
+
+    if _ng.match(note_text):
+        logger.info(f"Detected NG word. noteId: {note_id}, word: {_ng.why(note_text)}")
+        return "ng word detected"
+    if note_body["userId"] in set(have_note_user_ids):
+        logger.debug("Skiped api request because it was registered in database.")
+        return "skipped"
+
+    if not (note_text == ""):
+        logger.debug(f"Notes not registered in database. | body: {note_text} , id: {note_id}")
+        user_info = get_user_info(user_id=note_body["userId"])
+
+        if (notes_count := user_info["notesCount"]) == 1:
+            for i in response_emojis:
+                if any(j in note_text for j in i["keywords"]):
+                    if isinstance(i["emoji"], list):
+                        reaction = random.choice(i["emoji"])
+                        break
+                    else:
+                        reaction = i["emoji"]
+                        break
+            else:
+                reaction = random.choice(WELCOME_REACTIONS)
+
+            threading.Thread(target=add_reaction, args=(note_id, reaction,)).start()
+            threading.Thread(target=renote, args=(note_id,)).start()
+        elif notes_count > 5:
+            global count
+            have_note_user_ids.append(user_info["id"])
+            count += 1
+            if count % 100 == 0 and len(have_note_user_ids) < 100000:
+                update_db("have_note_user_ids", have_note_user_ids, False)
+                logger.info(f"DataBase Updated count:{len(have_note_user_ids)}")
+
+def on_error(ws, error):
+    logger.warning(str(error))
+
+def on_close(ws, status_code, msg):
+    logger.error(f"WebSocket closed. code:{status_code} msg:{msg}")
+    bot()
+
+
 def bot():
-    def on_message(ws, message):
-        global have_note_user_ids
-        note_body = json.loads(message)["body"]["body"]
-        note_id = note_body["id"]
-        note_text = note_body["text"]
-        if note_text is None:
-            note_text = ""
-
-        if _ng.match(note_text):
-            logger.info(f"Detected NG word. noteId: {note_id}, word: {_ng.why(note_text)}")
-            return "ng word detected"
-        if note_body["userId"] in set(have_note_user_ids):
-            logger.debug("Skiped api request because it was registered in database.")
-            return "skipped"
-
-        if not (note_text == ""):
-            logger.debug(f"Notes not registered in database. | body: {note_text} , id: {note_id}")
-            user_info = get_user_info(user_id=note_body["userId"])
-
-            if (notes_count := user_info["notesCount"]) == 1:
-                for i in response_emojis:
-                    if any(j in note_text for j in i["keywords"]):
-                        if isinstance(i["emoji"], list):
-                            reaction = random.choice(i["emoji"])
-                            break
-                        else:
-                            reaction = i["emoji"]
-                            break
-                else:
-                    reaction = random.choice(WELCOME_REACTIONS)
-
-                threading.Thread(target=add_reaction, args=(note_id, reaction,)).start()
-                threading.Thread(target=renote, args=(note_id,)).start()
-            elif notes_count > 5:
-                global count
-                have_note_user_ids.append(user_info["id"])
-                count += 1
-                if count % 100 == 0 and len(have_note_user_ids) < 100000:
-                    update_db("have_note_user_ids", have_note_user_ids, False)
-                    logger.info(f"DataBase Updated count:{len(have_note_user_ids)}")
-
-    def on_error(ws, error):
-        logger.warning(str(error))
-
-    def on_close(ws, status_code, msg):
-        logger.error(f"WebSocket closed. code:{status_code} msg:{msg}")
-        bot()
-
     streaming_api = f"wss://{HOST}/streaming?i={TOKEN}"
     # WebSocketの接続
     ws = websocket.WebSocketApp(streaming_api, on_message=on_message,
