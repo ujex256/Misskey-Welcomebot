@@ -51,7 +51,7 @@ def bot():
             return "skipped"
 
         if not (note_text == ""):
-            print(note_text)
+            logger.debug(f"Notes not registered in database. | body: {note_text} , id: {note_id}")
             user_info = get_user_info(user_id=note_body["userId"])
 
             if (notes_count := user_info["notesCount"]) == 1:
