@@ -1,11 +1,12 @@
-env
-__pycache__
-.vscode
-a.json
-test.py
+env/
+__pycache__/
+.vscode/
+/a.json
+/test.py
+/replit.py
 
-replit.py
-.env
+*.env
+!sample.env
 
 # NGワードは非公開
 ngWords.txt
