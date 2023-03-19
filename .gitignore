@@ -1,12 +1,14 @@
-env
-__pycache__
-.vscode
+env/
+__pycache__/
+.vscode/
 a.json
 test.py
-
 replit.py
-.env
+
+*.env
+!sample.env
 data/users.pickle
+
 # NGワードは非公開
 ngWords.txt
 ngWords_Hira.txt
