@@ -22,7 +22,7 @@ Replitを使用しない場合は、dataディレクトリの中に`users.pickle
 <br /><br />
 
 ## 設定
-1. `sample.env`の名前を`.env`に変更し、中を編集します。
+1. 環境変数を設定します。Replit以外は、`sample.env`の名前を`.env`に変更し、中を編集します。
 ```sh
 HOST=misskey.io
 SECRET-TOKEN=token

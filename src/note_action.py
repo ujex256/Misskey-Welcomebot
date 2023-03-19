@@ -5,12 +5,10 @@ from collections import deque
 
 import requests
 import coloredlogs
-from dotenv import load_dotenv
 from requests import Timeout
 from replit import db
 
 
-load_dotenv()
 HOST = getenv("HOST")
 TOKEN = getenv("SECRET-TOKEN")
 
