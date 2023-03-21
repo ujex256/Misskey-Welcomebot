@@ -20,5 +20,13 @@
     {
         "keywords": ["ろぐぼ", "ログインボーナス"],
         "emoji": ":opera:"
+    },
+    {
+        "keywords": [":nullpointerexception:", "ぬるぽ"],
+        "emoji": ":galtu:"
+    },
+    {
+        "keywords": [":nyanpuppu:", "猫", "ネコ", "ぬこ"],
+        "emoji": ":nyanpuppu:"
     }
 ]
