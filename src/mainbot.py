@@ -1,7 +1,6 @@
 import json
 import random
 import logging
-import logging.config
 from collections import deque
 from threading import Thread
 
