@@ -3,7 +3,6 @@ import json
 import random
 import pickle
 import logging
-import logging.config
 from collections import deque
 
 import websocket

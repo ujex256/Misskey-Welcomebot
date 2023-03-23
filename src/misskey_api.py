@@ -1,6 +1,5 @@
 import pickle
 import logging
-import logging.config
 from os import getenv
 from collections import deque
 
