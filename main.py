@@ -9,8 +9,8 @@ if __name__ == "__main__":
     p = multiprocessing.Process(target=bot)
     p.start()
 
-
-    @app.route('/')
+    @app.route("/")
     def index():
-        return 'Pong'
+        return "Pong"
+
     web.run(app)
