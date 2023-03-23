@@ -87,7 +87,9 @@ def bot():
     streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
     # WebSocketの接続
     ws = websocket.WebSocketApp(streaming_api, on_message=on_message,
-                                on_error=on_error, on_close=on_close)
+                                on_error=on_error, on_close=on_close,
+                                header={"User-Agent": "a"}
+                                )
     ws.on_open = lambda ws: ws.send(
         json.dumps({"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}})
     )
