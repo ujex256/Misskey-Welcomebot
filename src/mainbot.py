@@ -94,7 +94,9 @@ def bot():
     streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
     # WebSocketの接続
     ws = websocket.WebSocketApp(streaming_api, on_message=on_message,
-                                on_error=on_error, on_close=on_close)
+                                on_error=on_error, on_close=on_close,
+                                header={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"}
+                                )
     ws.on_open = lambda ws: ws.send(
         json.dumps({"type": "connect", "body": {"channel": "localTimeline", "id": "1"}})
     )
