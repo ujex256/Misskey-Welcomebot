@@ -46,6 +46,7 @@ def on_message(ws, message):
         return "ng word detected"
     if "@youkoso_bot" in note_text:
         Thread(target=misskey.reply, args=(note_id, "Pong!",)).start()
+        return
 
     if note_body["userId"] in set(have_note_user_ids):
         logger.debug("Skiped api request because it was registered in database.")
