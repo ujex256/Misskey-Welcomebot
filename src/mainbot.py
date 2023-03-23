@@ -89,6 +89,6 @@ def bot():
     ws = websocket.WebSocketApp(streaming_api, on_message=on_message,
                                 on_error=on_error, on_close=on_close)
     ws.on_open = lambda ws: ws.send(
-        json.dumps({"type": "connect", "body": {"channel": "localTimeline", "id": "1"}})
+        json.dumps({"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}})
     )
     ws.run_forever()
