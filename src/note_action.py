@@ -64,6 +64,20 @@ def get_user_info(user_name: str="", user_id: str="") -> dict | None:
     except Timeout:
         logger.warning("api timeout")
 
+def reply(note_id: str, msg: str):
+    res = requests.post(
+        f"https://{HOST}/api/notes/create",
+        json={
+            "localOnly": True,
+            "text": msg,
+            "replyId": note_id,
+            "i": TOKEN,
+        },
+    )
+    if res.ok:
+        logger.info(f"Replied! noteId: {note_id}, msg: {msg}")
+    else:
+        logger.error(f"Reply failed noteId: {note_id}, msg: {res.text}")
 
 # Misskeyに関係ない
 def update_db(key: str, value, allow_duplicates: bool=True) -> None:
