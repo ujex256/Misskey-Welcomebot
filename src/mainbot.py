@@ -98,6 +98,6 @@ def bot():
                                 header={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"}
                                 )
     ws.on_open = lambda ws: ws.send(
-        json.dumps({"type": "connect", "body": {"channel": "localTimeline", "id": "1"}})
+        json.dumps({"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}})
     )
     ws.run_forever()
