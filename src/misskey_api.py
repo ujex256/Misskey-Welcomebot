@@ -13,6 +13,7 @@ from requests import Timeout
 load_dotenv()
 HOST = getenv("HOST")
 TOKEN = getenv("SECRET-TOKEN")
+USERNAME = requests.post(f"https://{HOST}/api/i", json={"i": TOKEN}).json()["username"]
 
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)
