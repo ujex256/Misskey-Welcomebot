@@ -1,9 +1,9 @@
-import threading
 import json
 import random
 import pickle
 import logging
 from collections import deque
+from threading import Thread
 
 import websocket
 import coloredlogs
@@ -68,8 +68,8 @@ def on_message(ws, message):
             else:
                 reaction = random.choice(WELCOME_REACTIONS)
 
-            threading.Thread(target=misskey.add_reaction, args=(note_id, reaction,)).start()
-            threading.Thread(target=misskey.renote, args=(note_id,)).start()
+            Thread(target=misskey.add_reaction, args=(note_id, reaction,)).start()
+            Thread(target=misskey.renote, args=(note_id,)).start()
         elif notes_count > 5:
             global count
             have_note_user_ids.append(user_info["id"])
