@@ -13,7 +13,7 @@ from .logging_styles import set_default
 set_default()
 
 from .ngwords import NGWords
-from .note_action import (HOST, TOKEN, add_reaction, get_user_info, renote, update_db)
+from . import misskey_api as misskey
 
 
 WELCOME_REACTIONS = [
@@ -55,7 +55,7 @@ def on_message(ws, message):
 
     if not (note_text == ""):
         logger.debug(f"Notes not registered in database. | body: {note_text} , id: {note_id}")
-        user_info = get_user_info(user_id=note_body["userId"])
+        user_info = misskey.get_user_info(user_id=note_body["userId"])
 
         if (notes_count := user_info["notesCount"]) == 1:
             for i in response_emojis:
@@ -69,14 +69,14 @@ def on_message(ws, message):
             else:
                 reaction = random.choice(WELCOME_REACTIONS)
 
-            threading.Thread(target=add_reaction, args=(note_id, reaction,)).start()
-            threading.Thread(target=renote, args=(note_id,)).start()
+            threading.Thread(target=misskey.add_reaction, args=(note_id, reaction,)).start()
+            threading.Thread(target=misskey.renote, args=(note_id,)).start()
         elif notes_count > 5:
             global count
             have_note_user_ids.append(user_info["id"])
             count += 1
             if count % 100 == 0 and len(have_note_user_ids) < 100000:
-                update_db("have_note_user_ids", have_note_user_ids, False)
+                misskey.update_db("have_note_user_ids", have_note_user_ids, False)
                 logger.info(f"DataBase Updated count:{len(have_note_user_ids)}")
 
 def on_error(ws, error):
@@ -88,7 +88,7 @@ def on_close(ws, status_code, msg):
 
 
 def bot():
-    streaming_api = f"wss://{HOST}/streaming?i={TOKEN}"
+    streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
     # WebSocketの接続
     ws = websocket.WebSocketApp(streaming_api, on_message=on_message,
                                 on_error=on_error, on_close=on_close)
