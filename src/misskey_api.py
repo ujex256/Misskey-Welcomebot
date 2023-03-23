@@ -1,5 +1,4 @@
 import logging
-import logging.config
 from os import getenv
 from collections import deque
 
@@ -11,6 +10,7 @@ from replit import db
 
 HOST = getenv("HOST")
 TOKEN = getenv("SECRET-TOKEN")
+USERNAME = requests.post(f"https://{HOST}/api/i", json={"i": TOKEN}).json()["username"]
 
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)
