@@ -43,13 +43,6 @@ def add_reaction(note_id: str, reaction: str) -> None:
     else:
         logger.error(f"Failed to add reaction noteId: {note_id}, msg: {res.text}")
 
-def update_db(key: str, value, allow_duplicates: bool=True) -> None:
-    if isinstance(value, deque):
-        value = list(value)
-    if not allow_duplicates and isinstance(value, list):
-        value = list(set(value))
-    db[key] = value
-
 def get_user_info(user_name: str="", user_id: str="") -> dict | None:
     if user_name and user_id:
         raise Exception("どっちかにして")
@@ -70,3 +63,12 @@ def get_user_info(user_name: str="", user_id: str="") -> dict | None:
         return user_info.json()
     except Timeout:
         logger.warning("api timeout")
+
+
+# Misskeyに関係ない
+def update_db(key: str, value, allow_duplicates: bool=True) -> None:
+    if isinstance(value, deque):
+        value = list(value)
+    if not allow_duplicates and isinstance(value, list):
+        value = list(set(value))
+    db[key] = value
