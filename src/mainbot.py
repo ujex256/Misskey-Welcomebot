@@ -13,7 +13,7 @@ from .logging_styles import set_default
 set_default()
 
 from .ngwords import NGWords
-from .note_action import (HOST, TOKEN, add_reaction, get_user_info, renote, update_db)
+from .misskey_api import (HOST, TOKEN, add_reaction, get_user_info, renote, update_db)
 
 
 WELCOME_REACTIONS = [

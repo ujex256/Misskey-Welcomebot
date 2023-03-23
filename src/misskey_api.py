@@ -79,6 +79,7 @@ def reply(note_id: str, msg: str):
     else:
         logger.error(f"Reply failed noteId: {note_id}, msg: {res.text}")
 
+
 # Misskeyに関係ない
 def update_db(key: str, value, allow_duplicates: bool=True) -> None:
     if isinstance(value, deque):
