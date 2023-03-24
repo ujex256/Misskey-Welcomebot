@@ -27,7 +27,10 @@ _ng = NGWords("./ng_words/ngWords.txt")
 with open("./response.json", "r", encoding="utf8") as f:
     response_emojis = json.load(f)
 
-have_note_user_ids = deque(db["have_note_user_ids"])
+try:
+    have_note_user_ids = deque(db["have_note_user_ids"])
+except:
+    have_note_user_ids = deque()
 count = 0
 
 logger = logging.getLogger(__name__)
