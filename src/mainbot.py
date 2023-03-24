@@ -1,10 +1,9 @@
-import threading
 import json
 import random
 import pickle
 import logging
-import logging.config
 from collections import deque
+from threading import Thread
 
 import websocket
 import coloredlogs
@@ -13,7 +12,7 @@ from .logging_styles import set_default
 set_default()
 
 from .ngwords import NGWords
-from .note_action import (HOST, TOKEN, add_reaction, get_user_info, renote, update_db)
+from . import misskey_api as misskey
 
 
 WELCOME_REACTIONS = [
@@ -26,7 +25,7 @@ WELCOME_REACTIONS = [
 ]
 _ng = NGWords("./ng_words/ngWords.txt")
 with open("./response.json", "r", encoding="utf8") as f:
-    response_emojis = json.loads(f.read())
+    response_emojis = json.load(f)
 
 try:
     with open('./data/users.pickle', "rb") as f:
@@ -49,13 +48,17 @@ def on_message(ws, message):
     if _ng.match(note_text):
         logger.info(f"Detected NG word. noteId: {note_id}, word: {_ng.why(note_text)}")
         return "ng word detected"
+    if f"@{misskey.USERNAME}" in note_text:
+        Thread(target=misskey.reply, args=(note_id, "Pong!",)).start()
+        return
+
     if note_body["userId"] in set(have_note_user_ids):
         logger.debug("Skiped api request because it was registered in database.")
         return "skipped"
 
     if not (note_text == ""):
         logger.debug(f"Notes not registered in database. | body: {note_text} , id: {note_id}")
-        user_info = get_user_info(user_id=note_body["userId"])
+        user_info = misskey.get_user_info(user_id=note_body["userId"])
 
         if (notes_count := user_info["notesCount"]) == 1:
             for i in response_emojis:
@@ -69,14 +72,14 @@ def on_message(ws, message):
             else:
                 reaction = random.choice(WELCOME_REACTIONS)
 
-            threading.Thread(target=add_reaction, args=(note_id, reaction,)).start()
-            threading.Thread(target=renote, args=(note_id,)).start()
+            Thread(target=misskey.add_reaction, args=(note_id, reaction,)).start()
+            Thread(target=misskey.renote, args=(note_id,)).start()
         elif notes_count > 5:
             global count
             have_note_user_ids.append(user_info["id"])
             count += 1
             if count % 100 == 0 and len(have_note_user_ids) < 100000:
-                update_db("have_note_user_ids", have_note_user_ids, False)
+                misskey.update_db("have_note_user_ids", have_note_user_ids, False)
                 logger.info(f"DataBase Updated count:{len(have_note_user_ids)}")
 
 def on_error(ws, error):
@@ -88,11 +91,13 @@ def on_close(ws, status_code, msg):
 
 
 def bot():
-    streaming_api = f"wss://{HOST}/streaming?i={TOKEN}"
+    streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
     # WebSocketの接続
     ws = websocket.WebSocketApp(streaming_api, on_message=on_message,
-                                on_error=on_error, on_close=on_close)
+                                on_error=on_error, on_close=on_close,
+                                header={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"}
+                                )
     ws.on_open = lambda ws: ws.send(
-        json.dumps({"type": "connect", "body": {"channel": "localTimeline", "id": "1"}})
+        json.dumps({"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}})
     )
     ws.run_forever()
