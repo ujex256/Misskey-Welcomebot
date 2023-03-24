@@ -71,7 +71,7 @@ def on_message(ws, message):
             else:
                 reaction = random.choice(WELCOME_REACTIONS)
 
-            Thread(target=misskey.add_reaction, args=(note_id, reaction,)).start()
+            Thread(target=misskey.add_reaction, args=(note_id, reaction)).start()
             Thread(target=misskey.renote, args=(note_id,)).start()
         elif notes_count > 5:
             global count
