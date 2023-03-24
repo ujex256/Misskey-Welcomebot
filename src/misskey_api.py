@@ -7,6 +7,8 @@ import coloredlogs
 from requests import Timeout
 from replit import db
 
+from .rate_limitter import RateLimiter
+
 
 HOST = getenv("HOST")
 TOKEN = getenv("SECRET-TOKEN")
@@ -43,6 +45,7 @@ def add_reaction(note_id: str, reaction: str) -> None:
     else:
         logger.error(f"Failed to add reaction noteId: {note_id}, msg: {res.text}")
 
+@RateLimiter(0.5)
 def get_user_info(user_name: str="", user_id: str="") -> dict | None:
     if user_name and user_id:
         raise Exception("どっちかにして")
