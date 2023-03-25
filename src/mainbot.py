@@ -36,6 +36,22 @@ count = 0
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)
 
+# TODO: なんか良い名前に変えたい
+def send_welcome(note_id, note_text):
+    for i in response_emojis:
+        if any(j in note_text for j in i["keywords"]):
+            if isinstance(i["emoji"], list):
+                reaction = random.choice(i["emoji"])
+                break
+            else:
+                reaction = i["emoji"]
+                break
+    else:
+        reaction = random.choice(WELCOME_REACTIONS)
+
+    Thread(target=misskey.add_reaction, args=(note_id, reaction)).start()
+    Thread(target=misskey.renote, args=(note_id,)).start()
+
 def on_message(ws, message):
     global have_note_user_ids
     note_body = json.loads(message)["body"]["body"]
@@ -61,26 +77,20 @@ def on_message(ws, message):
     user_info = misskey.get_user_info(user_id=note_body["userId"])
 
     if (notes_count := user_info["notesCount"]) == 1:
-        for i in response_emojis:
-            if any(j in note_text for j in i["keywords"]):
-                if isinstance(i["emoji"], list):
-                    reaction = random.choice(i["emoji"])
-                    break
-                else:
-                    reaction = i["emoji"]
-                    break
-        else:
-            reaction = random.choice(WELCOME_REACTIONS)
-
-        Thread(target=misskey.add_reaction, args=(note_id, reaction)).start()
-        Thread(target=misskey.renote, args=(note_id,)).start()
+        send_welcome(note_id, note_text)
     elif notes_count > 5:
+        if notes_count <= 10:
+            notes = misskey.get_user_notes(user_info["id"], note_id, 10)
+            if all([note["renoteId"] for note in notes]):
+                send_welcome(note_id, note_text)
+                return
         global count
         have_note_user_ids.append(user_info["id"])
         count += 1
         if count % 100 == 0 and len(db["have_note_user_ids"]) < 100000:
             misskey.update_db("have_note_user_ids", list(have_note_user_ids), False)
             logger.info(f"DataBase Updated. count:{len(have_note_user_ids)}")
+
 
 def on_error(ws, error):
     logger.warning(str(error))

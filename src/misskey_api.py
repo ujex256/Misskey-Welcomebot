@@ -82,6 +82,23 @@ def get_user_info(user_name: str="", user_id: str="") -> dict | None:
     except Timeout:
         logger.warning("api timeout")
 
+@RateLimiter(0.5)
+def get_user_notes(user_id: str, until_id: str, limit: int):
+    try:
+        body = {
+            "userId": user_id,
+            "untilId": until_id,
+            "limit": limit,
+            "i": TOKEN,
+        }
+        user_info = requests.post(
+            f"https://{HOST}/api/users/show",
+            json=body, timeout=5,
+        )
+        return user_info.json()
+    except Timeout:
+        logger.warning("api timeout")
+
 
 # Misskeyに関係ない
 def update_db(key: str, value, allow_duplicates: bool=True) -> None:
