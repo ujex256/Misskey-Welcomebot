@@ -51,7 +51,7 @@ def on_message(ws, message):
         Thread(target=misskey.reply, args=(note_id, "Pong!",)).start()
         return
 
-    if is_registered := note_body["userId"] in set(have_note_user_ids):
+    if note_body["userId"] in set(have_note_user_ids):
         logger.debug("Skiped api request because it was registered in database.")
         return "skipped"
 
@@ -75,8 +75,7 @@ def on_message(ws, message):
             Thread(target=misskey.renote, args=(note_id,)).start()
         elif notes_count > 5:
             global count
-            if not is_registered:
-                have_note_user_ids.append(user_info["id"])
+            have_note_user_ids.append(user_info["id"])
             count += 1
             if count % 100 == 0 and len(db["have_note_user_ids"]) < 100000:
                 misskey.update_db("have_note_user_ids", list(have_note_user_ids), False)
