@@ -6,7 +6,7 @@ class RateLimiter:
         """レートリミット
 
         Args:
-            per_second (int): 1回の間隔
+            per_second (int): 1秒あたり何回か
         """
         self.per_second = per_second  # リクエスト送信の間隔（秒）
         self.last_called_time = time.time()
