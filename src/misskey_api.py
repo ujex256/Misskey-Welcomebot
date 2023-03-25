@@ -45,6 +45,21 @@ def add_reaction(note_id: str, reaction: str) -> None:
     else:
         logger.error(f"Failed to add reaction noteId: {note_id}, msg: {res.text}")
 
+def reply(note_id: str, msg: str):
+    res = requests.post(
+        f"https://{HOST}/api/notes/create",
+        json={
+            "localOnly": True,
+            "text": msg,
+            "replyId": note_id,
+            "i": TOKEN,
+        },
+    )
+    if res.ok:
+        logger.info(f"Replied! noteId: {note_id}, msg: {msg}")
+    else:
+        logger.error(f"Reply failed noteId: {note_id}, msg: {res.text}")
+
 @RateLimiter(0.5)
 def get_user_info(user_name: str="", user_id: str="") -> dict | None:
     if user_name and user_id:
@@ -66,21 +81,6 @@ def get_user_info(user_name: str="", user_id: str="") -> dict | None:
         return user_info.json()
     except Timeout:
         logger.warning("api timeout")
-
-def reply(note_id: str, msg: str):
-    res = requests.post(
-        f"https://{HOST}/api/notes/create",
-        json={
-            "localOnly": True,
-            "text": msg,
-            "replyId": note_id,
-            "i": TOKEN,
-        },
-    )
-    if res.ok:
-        logger.info(f"Replied! noteId: {note_id}, msg: {msg}")
-    else:
-        logger.error(f"Reply failed noteId: {note_id}, msg: {res.text}")
 
 
 # Misskeyに関係ない
