@@ -80,7 +80,7 @@ def on_message(ws, message):
         count += 1
         if count % 100 == 0 and len(db["have_note_user_ids"]) < 100000:
             misskey.update_db("have_note_user_ids", list(have_note_user_ids), False)
-            logger.info(f"DataBase Updated count:{len(db['have_note_user_ids'])}")
+            logger.info(f"DataBase Updated. count:{len(have_note_user_ids)}")
 
 def on_error(ws, error):
     logger.warning(str(error))
