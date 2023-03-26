@@ -67,8 +67,8 @@ def on_message(ws, message):
         Thread(target=misskey.reply, args=(note_id, "Pong!",)).start()
         return
 
-    if note_text == "":
-        return "renote note"
+    if not misskey.is_valid_note(note_body):
+        return "no"
     if note_body["userId"] in set(have_note_user_ids):
         logger.debug("Skiped api request because it was registered in database.")
         return "skipped"
@@ -81,7 +81,7 @@ def on_message(ws, message):
     elif notes_count > 5:
         if notes_count <= 10:
             notes = misskey.get_user_notes(user_info["id"], note_id, 10)
-            if all([note["renoteId"] for note in notes]):
+            if all([not misskey.is_valid_note(note) for note in notes]):
                 send_welcome(note_id, note_text)
                 return
         global count
