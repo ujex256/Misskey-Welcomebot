@@ -9,8 +9,8 @@ import coloredlogs
 from replit import db
 
 from .logging_styles import set_default
-set_default()
 
+set_default()
 from .ngwords import NGWords
 from . import misskey_api as misskey
 
@@ -52,6 +52,7 @@ def send_welcome(note_id, note_text):
     Thread(target=misskey.add_reaction, args=(note_id, reaction)).start()
     Thread(target=misskey.renote, args=(note_id,)).start()
 
+
 def on_message(ws, message):
     global have_note_user_ids
     note_body = json.loads(message)["body"]["body"]
@@ -64,7 +65,7 @@ def on_message(ws, message):
         logger.info(f"Detected NG word. noteId: {note_id}, word: {_ng.why(note_text)}")
         return "ng word detected"
     if f"@{misskey.USERNAME}" in note_text:
-        Thread(target=misskey.reply, args=(note_id, "Pong!",)).start()
+        Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
         return
 
     if not misskey.is_valid_note(note_body):
@@ -73,7 +74,9 @@ def on_message(ws, message):
         logger.debug("Skiped api request because it was registered in database.")
         return "skipped"
 
-    logger.debug(f"Notes not registered in database. | body: {note_text} , id: {note_id}")
+    logger.debug(
+        f"Notes not registered in database. | body: {note_text} , id: {note_id}"
+    )
     user_info = misskey.get_user_info(user_id=note_body["userId"])
 
     if (notes_count := user_info["notesCount"]) == 1:
@@ -91,7 +94,6 @@ def on_message(ws, message):
             misskey.update_db("have_note_user_ids", list(have_note_user_ids), False)
             logger.info(f"DataBase Updated. count:{len(have_note_user_ids)}")
 
-
 def on_error(ws, error):
     logger.warning(str(error))
 
@@ -103,11 +105,16 @@ def on_close(ws, status_code, msg):
 def bot():
     streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
     # WebSocketの接続
-    ws = websocket.WebSocketApp(streaming_api, on_message=on_message,
-                                on_error=on_error, on_close=on_close,
-                                header={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"}
-                                )
+    ws = websocket.WebSocketApp(
+        streaming_api,
+        on_message=on_message, on_error=on_error, on_close=on_close,
+        header={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+        },
+    )
     ws.on_open = lambda ws: ws.send(
-        json.dumps({"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}})
+        json.dumps(
+            {"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}}
+        )
     )
     ws.run_forever()

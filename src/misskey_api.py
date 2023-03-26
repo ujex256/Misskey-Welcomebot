@@ -17,6 +17,7 @@ USERNAME = requests.post(f"https://{HOST}/api/i", json={"i": TOKEN}).json()["use
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)
 
+
 def renote(note_id: str) -> None:
     res = requests.post(
         f"https://{HOST}/api/notes/create",
@@ -61,7 +62,7 @@ def reply(note_id: str, msg: str):
         logger.error(f"Reply failed noteId: {note_id}, msg: {res.text}")
 
 @RateLimiter(0.5)
-def get_user_info(user_name: str="", user_id: str="") -> dict | None:
+def get_user_info(user_name: str = "", user_id: str = "") -> dict | None:
     if user_name and user_id:
         raise Exception("どっちかにして")
     try:
@@ -76,7 +77,8 @@ def get_user_info(user_name: str="", user_id: str="") -> dict | None:
             body.pop("userId")
         user_info = requests.post(
             f"https://{HOST}/api/users/show",
-            json=body, timeout=5,
+            json=body,
+            timeout=5,
         )
         return user_info.json()
     except Timeout:
@@ -93,7 +95,8 @@ def get_user_notes(user_id: str, until_id: str, limit: int):
         }
         user_info = requests.post(
             f"https://{HOST}/api/notes",
-            json=body, timeout=5,
+            json=body,
+            timeout=5,
         )
         return user_info.json()
     except Timeout:
@@ -107,8 +110,9 @@ def is_valid_note(note: dict) -> bool:
     """
     return (note["visibility"] == "public") and (note["text"]) and (not note["replyId"])
 
+
 # Misskeyに関係ない
-def update_db(key: str, value, allow_duplicates: bool=True) -> None:
+def update_db(key: str, value, allow_duplicates: bool = True) -> None:
     if isinstance(value, deque):
         value = list(value)
     if not allow_duplicates and isinstance(value, list):
