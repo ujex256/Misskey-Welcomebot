@@ -17,6 +17,8 @@ USERNAME = requests.post(f"https://{HOST}/api/i", json={"i": TOKEN}).json()["use
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)
 
+limiter = RateLimiter(0.5)
+limiter2 = RateLimiter(0.5)
 
 def renote(note_id: str) -> None:
     res = requests.post(
@@ -61,7 +63,7 @@ def reply(note_id: str, msg: str):
     else:
         logger.error(f"Reply failed noteId: {note_id}, msg: {res.text}")
 
-@RateLimiter(0.5)
+@limiter
 def get_user_info(user_name: str = "", user_id: str = "") -> dict | None:
     if user_name and user_id:
         raise Exception("どっちかにして")
@@ -84,7 +86,7 @@ def get_user_info(user_name: str = "", user_id: str = "") -> dict | None:
     except Timeout:
         logger.warning("api timeout")
 
-@RateLimiter(0.5)
+@limiter2
 def get_user_notes(user_id: str, until_id: str, limit: int):
     try:
         body = {
