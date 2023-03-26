@@ -92,7 +92,7 @@ def get_user_notes(user_id: str, until_id: str, limit: int):
             "i": TOKEN,
         }
         user_info = requests.post(
-            f"https://{HOST}/api/users/show",
+            f"https://{HOST}/api/notes",
             json=body, timeout=5,
         )
         return user_info.json()
