@@ -62,9 +62,9 @@ def on_message(ws, message):
     if _ng.match(note_text):
         logger.info(f"Detected NG word. noteId: {note_id}, word: {_ng.why(note_text)}")
         return "ng word detected"
-    if f"@{misskey.USERNAME}" in note_text:
+    if ("/ping" in note_text) and (f"@{misskey.USERNAME}" in note_text or note_body["visibility"] == "specified"):
         Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
-        return
+        return "replied"
 
     if not misskey.is_valid_note(note_body):
         return "no"
