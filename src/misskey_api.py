@@ -8,6 +8,8 @@ import coloredlogs
 from dotenv import load_dotenv
 from requests import Timeout
 
+from .rate_limitter import RateLimiter
+
 
 load_dotenv()
 HOST = getenv("HOST")
@@ -16,6 +18,9 @@ USERNAME = requests.post(f"https://{HOST}/api/i", json={"i": TOKEN}).json()["use
 
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)
+
+limiter = RateLimiter(0.5)
+limiter2 = RateLimiter(0.5)
 
 def renote(note_id: str) -> None:
     res = requests.post(
@@ -45,27 +50,6 @@ def add_reaction(note_id: str, reaction: str) -> None:
     else:
         logger.error(f"Failed to add reaction noteId: {note_id}, msg: {res.text}")
 
-def get_user_info(user_name: str="", user_id: str="") -> dict | None:
-    if user_name and user_id:
-        raise Exception("どっちかにして")
-    try:
-        body = {
-            "username": user_name,
-            "userId": user_id,
-            "i": TOKEN,
-        }
-        if user_id:
-            body.pop("username")
-        else:
-            body.pop("userId")
-        user_info = requests.post(
-            f"https://{HOST}/api/users/show",
-            json=body, timeout=5,
-        )
-        return user_info.json()
-    except Timeout:
-        logger.warning("api timeout")
-
 def reply(note_id: str, msg: str):
     res = requests.post(
         f"https://{HOST}/api/notes/create",
@@ -80,6 +64,55 @@ def reply(note_id: str, msg: str):
         logger.info(f"Replied! noteId: {note_id}, msg: {msg}")
     else:
         logger.error(f"Reply failed noteId: {note_id}, msg: {res.text}")
+
+@limiter
+def get_user_info(user_name: str = "", user_id: str = "") -> dict | None:
+    if user_name and user_id:
+        raise Exception("どっちかにして")
+    try:
+        body = {
+            "username": user_name,
+            "userId": user_id,
+            "i": TOKEN,
+        }
+        if user_id:
+            body.pop("username")
+        else:
+            body.pop("userId")
+        user_info = requests.post(
+            f"https://{HOST}/api/users/show",
+            json=body,
+            timeout=5,
+        )
+        return user_info.json()
+    except Timeout:
+        logger.warning("api timeout")
+
+@limiter2
+def get_user_notes(user_id: str, until_id: str, limit: int):
+    try:
+        body = {
+            "userId": user_id,
+            "untilId": until_id,
+            "limit": limit,
+            "i": TOKEN,
+        }
+        user_info = requests.post(
+            f"https://{HOST}/api/notes",
+            json=body,
+            timeout=5,
+        )
+        return user_info.json()
+    except Timeout:
+        logger.warning("api timeout")
+
+
+def is_valid_note(note: dict) -> bool:
+    """ノートがリノートに適しているか判定する
+
+    ノートがパブリック投稿であり、リノートやリプライの投稿ではなければTrueを返す
+    """
+    return (note["visibility"] == "public") and (note["text"]) and (not note["replyId"])
 
 
 # Misskeyに関係ない
