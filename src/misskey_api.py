@@ -106,6 +106,14 @@ def get_user_notes(user_id: str, until_id: str, limit: int):
         logger.warning("api timeout")
 
 
+def is_valid_note(note: dict) -> bool:
+    """ノートがリノートに適しているか判定する
+
+    ノートがパブリック投稿であり、リノートやリプライの投稿ではなければTrueを返す
+    """
+    return (note["visibility"] == "public") and (note["text"]) and (not note["replyId"])
+
+
 # Misskeyに関係ない
 def update_db(key: str, value, allow_duplicates: bool=True) -> None:
     if not allow_duplicates and isinstance(value, deque):
