@@ -41,10 +41,9 @@ def send_welcome(note_id, note_text):
         if any(j in note_text for j in i["keywords"]):
             if isinstance(i["emoji"], list):
                 reaction = random.choice(i["emoji"])
-                break
             else:
                 reaction = i["emoji"]
-                break
+            break
     else:
         reaction = random.choice(WELCOME_REACTIONS)
 
