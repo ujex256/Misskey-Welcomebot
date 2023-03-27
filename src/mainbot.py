@@ -82,11 +82,11 @@ def on_message(ws, message):
         send_welcome(note_id, note_text)
     elif notes_count > 5:
         if notes_count <= 10:
-            notes = misskey.get_user_notes(user_info["id"], note_id, 10)
+            notes = misskey.get_user_notes(note_body["userId"], note_id, 10)
             if all([not misskey.is_valid_note(note) for note in notes]):
                 send_welcome(note_id, note_text)
                 return
-        have_note_user_ids.append(user_info["id"])
+        have_note_user_ids.append(note_body["userId"])
         if count := len(have_note_user_ids) % 100 == 0 and count < 100000:
             misskey.update_db("have_note_user_ids", have_note_user_ids, False)
             logger.info(f"DataBase Updated. count: {count}")
