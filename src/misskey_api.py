@@ -66,7 +66,7 @@ def reply(note_id: str, msg: str):
         logger.error(f"Reply failed noteId: {note_id}, msg: {res.text}")
 
 @limiter
-def get_user_info(user_name: str="", user_id: str="") -> dict | None:
+def get_user_info(user_name: str = "", user_id: str = "") -> dict | None:
     if user_name and user_id:
         raise Exception("どっちかにして")
     try:
@@ -81,7 +81,8 @@ def get_user_info(user_name: str="", user_id: str="") -> dict | None:
             body.pop("userId")
         user_info = requests.post(
             f"https://{HOST}/api/users/show",
-            json=body, timeout=5,
+            json=body,
+            timeout=5,
         )
         return user_info.json()
     except Timeout:
