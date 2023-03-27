@@ -31,7 +31,6 @@ try:
     have_note_user_ids = deque(db["have_note_user_ids"])
 except:
     have_note_user_ids = deque()
-count = 0
 
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)
@@ -87,12 +86,10 @@ def on_message(ws, message):
             if all([not misskey.is_valid_note(note) for note in notes]):
                 send_welcome(note_id, note_text)
                 return
-        global count
         have_note_user_ids.append(user_info["id"])
-        count += 1
-        if count % 100 == 0 and len(db["have_note_user_ids"]) < 100000:
-            misskey.update_db("have_note_user_ids", list(have_note_user_ids), False)
-            logger.info(f"DataBase Updated. count:{len(have_note_user_ids)}")
+        if count := len(have_note_user_ids) % 100 == 0 and count < 100000:
+            misskey.update_db("have_note_user_ids", have_note_user_ids, False)
+            logger.info(f"DataBase Updated. count: {count}")
 
 def on_error(ws, error):
     logger.warning(str(error))
