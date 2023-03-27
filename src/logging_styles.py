@@ -19,6 +19,7 @@ DEFAULT_LEVEL_STYLES = {
     "critical": {"color": "red"},
 }
 
+
 def set_default():
     coloredlogs.DEFAULT_LOG_LEVEL = DEFAULT_LOG_LEVEL
     coloredlogs.DEFAULT_LOG_FORMAT = DEFAULT_LOG_FORMAT
