@@ -1,9 +1,9 @@
 env/
 __pycache__/
 .vscode/
-a.json
-test.py
-replit.py
+/a.json
+/test.py
+/replit.py
 
 *.env
 !sample.env
