@@ -113,7 +113,7 @@ def is_valid_note(note: dict) -> bool:
     is_public = note["visibility"] == "public"
     text_exists = note["text"] is not None
     is_reply = note["replyId"] is not None
-    return is_public and text_exists and not is_reply
+    return (is_public) and (text_exists) and (not is_reply)
 
 
 # Misskeyに関係ない
