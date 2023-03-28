@@ -96,7 +96,7 @@ def get_user_notes(user_id: str, until_id: str, limit: int):
             "i": TOKEN,
         }
         user_info = requests.post(
-            f"https://{HOST}/api/notes",
+            f"https://{HOST}/api/users/notes",
             json=body,
             timeout=5,
         )
@@ -110,7 +110,10 @@ def is_valid_note(note: dict) -> bool:
 
     ノートがパブリック投稿であり、リノートやリプライの投稿ではなければTrueを返す
     """
-    return (note["visibility"] == "public") and (note["text"]) and (not note["replyId"])
+    is_public = note["visibility"] == "public"
+    text_exists = note["text"] is not None
+    is_reply = note["replyId"] is not None
+    return (is_public) and (text_exists) and (not is_reply)
 
 
 # Misskeyに関係ない
