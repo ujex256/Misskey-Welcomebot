@@ -8,7 +8,7 @@ from threading import Thread
 import coloredlogs
 import websocket
 
-from .logging_styles import set_default
+from logging_styles import set_default
 
 set_default()
 import misskey_api as misskey  # NOQA

@@ -8,7 +8,7 @@ import coloredlogs
 from dotenv import load_dotenv
 from requests import Timeout
 
-from .rate_limitter import RateLimiter
+from rate_limitter import RateLimiter
 
 
 load_dotenv()
