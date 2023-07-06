@@ -1,19 +1,18 @@
 import json
-import random
-import pickle
 import logging
+import pickle
+import random
 from collections import deque
 from threading import Thread
 
-import websocket
 import coloredlogs
+import websocket
 
 from .logging_styles import set_default
 
 set_default()
-from .ngwords import NGWords
-from . import misskey_api as misskey
-
+import misskey_api as misskey  # NOQA
+from ngwords import NGWords  # NOQA
 
 WELCOME_REACTIONS = [
     ":youkoso:",
@@ -35,6 +34,7 @@ except FileNotFoundError:
 
 logger = logging.getLogger(__name__)
 coloredlogs.install(logger=logger)
+
 
 # TODO: なんか良い名前に変えたい
 def send_welcome(note_id, note_text):
@@ -92,8 +92,10 @@ def on_message(ws, message):
             misskey.update_db("have_note_user_ids", have_note_user_ids, False)
             logger.info(f"DataBase Updated. count: {count}")
 
+
 def on_error(ws, error):
     logger.warning(str(error))
+
 
 def on_close(ws, status_code, msg):
     logger.error(f"WebSocket closed. code:{status_code} msg:{msg}")
@@ -102,17 +104,13 @@ def on_close(ws, status_code, msg):
 
 def bot():
     streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
+    USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+    SEND_MESSAGE = {"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}}
     # WebSocketの接続
     ws = websocket.WebSocketApp(
         streaming_api,
         on_message=on_message, on_error=on_error, on_close=on_close,
-        header={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
-        },
+        header={"User-Agent": USER_AGENT}
     )
-    ws.on_open = lambda ws: ws.send(
-        json.dumps(
-            {"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}}
-        )
-    )
+    ws.on_open = lambda ws: ws.send(json.dumps(SEND_MESSAGE))
     ws.run_forever()
