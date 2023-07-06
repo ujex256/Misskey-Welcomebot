@@ -4,7 +4,7 @@ from os import getenv
 from dotenv import load_dotenv
 from flask import Flask, jsonify
 
-from src.mainbot import bot
+from mainbot import bot
 
 app = Flask(__name__)
 
