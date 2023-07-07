@@ -14,6 +14,7 @@ from ngwords import NGWords
 from emojis import EmojiSet
 
 
+counter = utils.Counter(100, lambda: args[0].send("p"))  # NOQA
 emojis = EmojiSet("response.json")
 ngw = NGWords("./ng_words/ngWords.txt")
 
@@ -41,6 +42,7 @@ def send_welcome(note_id: str, note_text: str) -> None:
     Thread(target=misskey.renote, args=(note_id,)).start()
 
 
+@counter
 def on_message(ws, message):
     global have_note_user_ids
     note_body = json.loads(message)["body"]["body"]
