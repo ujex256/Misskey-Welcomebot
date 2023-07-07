@@ -112,7 +112,7 @@ def get_user_notes(user_id: str, until_id: str, limit: int):
         logger.warning("api timeout")
 
 
-def is_valid_note(note: dict) -> bool:
+def can_renote(note: dict) -> bool:
     """ノートがリノートに適しているか判定する
 
     ノートがパブリック投稿であり、リノートやリプライの投稿ではなければTrueを返す
@@ -121,6 +121,13 @@ def is_valid_note(note: dict) -> bool:
     text_exists = note["text"] is not None
     is_reply = note["replyId"] is not None
     return (is_public) and (text_exists) and (not is_reply)
+
+
+def can_reply(note: dict) -> bool:
+    is_ping = "/ping" in note["text"]
+    is_mention = f"@{USERNAME}" in note
+    is_specified = note["visibility"] == "specified"
+    return is_ping and is_mention or is_specified
 
 
 # Misskeyに関係ない

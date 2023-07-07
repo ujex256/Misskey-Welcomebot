@@ -43,20 +43,24 @@ def on_message(ws, message):
     note_id = note_body["id"]
     note_text = note_body["text"]
     if note_text is None:
+        isi
         note_text = ""
 
+    return_flg = False
     if _ng.match(note_text):
+        return_flg = True
         logger.info(f"Detected NG word. noteId: {note_id}, word: {_ng.why(note_text)}")
-        return "ng word detected"
-    if ("/ping" in note_text) and (f"@{misskey.USERNAME}" in note_text or note_body["visibility"] == "specified"):
+    if misskey.can_reply(note_body):
+        return_flg = True
         Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
-        return "replied"
-
-    if not misskey.is_valid_note(note_body):
-        return "no"
+    if not misskey.can_renote(note_body):
+        return_flg = True
     if note_body["userId"] in set(have_note_user_ids):
+        return_flg = True
         logger.debug("Skiped api request because it was registered in database.")
-        return "skipped"
+
+    if return_flg:
+        return None
 
     logger.debug(
         f"Notes not registered in database. | body: {note_text} , id: {note_id}"
@@ -67,7 +71,7 @@ def on_message(ws, message):
         send_welcome(note_id, note_text)
     elif notes_count <= 10:
         notes = misskey.get_user_notes(note_body["userId"], note_id, 10)
-        if all([not misskey.is_valid_note(note) for note in notes]):
+        if all([not misskey.can_renote(note) for note in notes]):
             send_welcome(note_id, note_text)
             return
 
