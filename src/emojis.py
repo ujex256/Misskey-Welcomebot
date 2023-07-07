@@ -17,8 +17,8 @@ class EmojiSet:
             loaded = data.read()
         self._check_format(loaded)
 
-        self.RESPONSE_EMOJIS = loaded["triggers"]
-        self.OTHERS = loaded["other"]
+        self.response_emojis = loaded["triggers"]
+        self.others = loaded["other"]
 
     def _check_format(json: Any) -> None:
         if not isinstance(json, dict) or tuple(json.keys()) != ("triggers", "other"):
@@ -28,11 +28,11 @@ class EmojiSet:
             raise ConfigJsonError("response.jsonのトリガーのキーはkeywordsとemojiにしてください。")
 
     def get_response_emoji(self, text: str) -> str:
-        for i in self.RESPONSE_EMOJIS:
+        for i in self.response_emojis:
             if any(j in text for j in i["keywords"]):
                 if isinstance(i["emoji"], list):
                     return random.choice(i["emoji"])
                 else:
                     return i["emoji"]
         else:
-            return random.choice(self.OTHERS)
+            return random.choice(self.others)
