@@ -18,11 +18,11 @@ class EmojiSet:
         self._check_format(loaded)
 
         self.response_emojis = loaded["triggers"]
-        self.others = loaded["other"]
+        self.others = loaded["others"]
 
     def _check_format(json: Any) -> None:
-        if not isinstance(json, dict) or tuple(json.keys()) != ("triggers", "other"):
-            raise ConfigJsonError("response.jsonは{'triggers': [], 'other': []}の形にしてください。")
+        if not isinstance(json, dict) or tuple(json.keys()) != ("triggers", "others"):
+            raise ConfigJsonError("response.jsonは{'triggers': [], 'others': []}の形にしてください。")
 
         if any([tuple(i.keys()) != ("keywords", "emoji") for i in json["triggers"]]):
             raise ConfigJsonError("response.jsonのトリガーのキーはkeywordsとemojiにしてください。")
