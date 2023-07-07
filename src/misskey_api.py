@@ -8,6 +8,7 @@ import coloredlogs
 from dotenv import load_dotenv
 from requests import Timeout
 
+import logging_styles
 from utils import RateLimiter
 
 
@@ -17,6 +18,7 @@ TOKEN = getenv("SECRET-TOKEN")
 USERNAME = requests.post(f"https://{HOST}/api/i", json={"i": TOKEN}).json()["username"]
 
 logger = logging.getLogger(__name__)
+logging_styles.set_default()
 coloredlogs.install(logger=logger)
 
 limiter = RateLimiter(0.5)

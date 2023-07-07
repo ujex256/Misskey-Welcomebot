@@ -7,12 +7,11 @@ from threading import Thread
 import coloredlogs
 import websocket
 
-from logging_styles import set_default
-
-set_default()
-import misskey_api as misskey  # NOQA
-from ngwords import NGWords  # NOQA
-from emojis import EmojiSet  # NOQA
+import utils
+import logging_styles
+import misskey_api as misskey
+from ngwords import NGWords
+from emojis import EmojiSet
 
 
 emojis = EmojiSet("response.json")
@@ -25,6 +24,7 @@ except FileNotFoundError:
     have_note_user_ids = deque()
 
 logger = logging.getLogger(__name__)
+logging_styles.set_default()
 coloredlogs.install(logger=logger)
 
 
