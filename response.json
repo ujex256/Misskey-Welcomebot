@@ -23,5 +23,12 @@
             "emoji": ":opera:"
         }
     ],
-    "other": [""]
+    "others": [
+        ":youkoso:",
+        ":youkoso_send_money:",
+        ":send_money:",
+        ":welcome_to_underground:",
+        ":supertada:",
+        ":yorosiku_onegai:"
+    ]
 }
