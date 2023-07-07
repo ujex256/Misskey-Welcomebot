@@ -3,11 +3,16 @@ import random
 from typing import Any
 
 
+class ConfigJsonError(Exception):
+    pass
+
+
 def _check_format(json: Any) -> None:
-    if not isinstance(json, dict):
-        raise Exception("response.jsonは{'triggers': [], 'other': []}の形にしてください。")
+    if not isinstance(json, dict) or tuple(json.keys()) != ("triggers", "other"):
+        raise ConfigJsonError("response.jsonは{'triggers': [], 'other': []}の形にしてください。")
+
     if any([tuple(i.keys()) != ("keywords", "emoji") for i in json["triggers"]]):
-        raise Exception("response.jsonのトリガーのキーはkeywordsとemojiにしてください。")
+        raise ConfigJsonError("response.jsonのトリガーのキーはkeywordsとemojiにしてください。")
 
 
 def get_response_emoji(text: str) -> str:
@@ -23,7 +28,7 @@ def get_response_emoji(text: str) -> str:
 
 with open("response.json", "r") as f:
     loaded = json.load(f)
+    _check_format(loaded)
 
     RESPONSE_EMOJIS = loaded["triggers"]
     OTHERS = loaded["other"]
-    _check_format(RESPONSE_EMOJIS)
