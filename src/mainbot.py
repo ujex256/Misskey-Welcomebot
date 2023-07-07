@@ -43,9 +43,9 @@ def on_message(ws, message):
     note_id = note_body["id"]
     note_text = note_body["text"]
     if note_text is None:
-        isi
         note_text = ""
 
+    # Renote不可ならreturn
     return_flg = False
     if _ng.match(note_text):
         return_flg = True
@@ -69,7 +69,7 @@ def on_message(ws, message):
 
     if (notes_count := user_info["notesCount"]) == 1:
         send_welcome(note_id, note_text)
-    elif notes_count <= 10:
+    elif notes_count <= 10:  # ノート数が10以下ならRenote出来る可能性
         notes = misskey.get_user_notes(note_body["userId"], note_id, 10)
         if all([not misskey.can_renote(note) for note in notes]):
             send_welcome(note_id, note_text)
@@ -93,7 +93,7 @@ def on_close(ws, status_code, msg):
 
 def bot():
     streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
-    USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+    USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"  # NOQA
     SEND_MESSAGE = {"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}}
     # WebSocketの接続
     ws = websocket.WebSocketApp(
