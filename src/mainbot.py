@@ -1,7 +1,6 @@
 import json
 import logging
 import pickle
-import random
 from collections import deque
 from threading import Thread
 
@@ -13,15 +12,10 @@ from logging_styles import set_default
 set_default()
 import misskey_api as misskey  # NOQA
 from ngwords import NGWords  # NOQA
+from emojis import EmojiSet  # NOQA
 
-WELCOME_REACTIONS = [
-    ":youkoso:",
-    ":youkoso_send_money:",
-    ":send_money:",
-    ":nyanpuppu:",
-    ":supertada:",
-    ":yorosiku_onegai:",
-]
+
+emojis = EmojiSet("response.json")
 _ng = NGWords("./ng_words/ngWords.txt")
 with open("./response.json", "r", encoding="utf8") as f:
     response_emojis = json.load(f)
@@ -38,16 +32,7 @@ coloredlogs.install(logger=logger)
 
 # TODO: なんか良い名前に変えたい
 def send_welcome(note_id, note_text):
-    for i in response_emojis:
-        if any(j in note_text for j in i["keywords"]):
-            if isinstance(i["emoji"], list):
-                reaction = random.choice(i["emoji"])
-            else:
-                reaction = i["emoji"]
-            break
-    else:
-        reaction = random.choice(WELCOME_REACTIONS)
-
+    reaction = emojis.get_response_emoji(note_text)
     Thread(target=misskey.add_reaction, args=(note_id, reaction)).start()
     Thread(target=misskey.renote, args=(note_id,)).start()
 
