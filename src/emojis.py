@@ -11,7 +11,7 @@ class ConfigJsonError(Exception):
 class EmojiSet:
     def __init__(self, data: str | StringIO) -> None:
         if isinstance(data, str):
-            with open(f"{data}.json", "r") as f:
+            with open(data, "r") as f:
                 loaded = json.load(f)
         else:
             loaded = data.read()
