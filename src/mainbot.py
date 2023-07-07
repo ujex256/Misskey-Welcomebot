@@ -16,9 +16,7 @@ from emojis import EmojiSet  # NOQA
 
 
 emojis = EmojiSet("response.json")
-_ng = NGWords("./ng_words/ngWords.txt")
-with open("./response.json", "r", encoding="utf8") as f:
-    response_emojis = json.load(f)
+ngw = NGWords("./ng_words/ngWords.txt")
 
 try:
     with open('./data/users.pickle', "rb") as f:
@@ -47,9 +45,9 @@ def on_message(ws, message):
 
     # Renote不可ならreturn
     return_flg = False
-    if _ng.match(note_text):
+    if ngw.match(note_text):
         return_flg = True
-        logger.info(f"Detected NG word. noteId: {note_id}, word: {_ng.why(note_text)}")
+        logger.info(f"Detected NG word. noteId: {note_id}, word: {ngw.why(note_text)}")
     if misskey.can_reply(note_body):
         return_flg = True
         Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
