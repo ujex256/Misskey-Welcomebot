@@ -29,7 +29,13 @@ coloredlogs.install(logger=logger)
 
 
 # TODO: なんか良い名前に変えたい
-def send_welcome(note_id, note_text):
+def send_welcome(note_id: str, note_text: str) -> None:
+    """Send welcome message.
+
+    Args:
+        note_id (str): misskey note id
+        note_text (str): misskey note text
+    """
     reaction = emojis.get_response_emoji(note_text)
     Thread(target=misskey.add_reaction, args=(note_id, reaction)).start()
     Thread(target=misskey.renote, args=(note_id,)).start()
@@ -86,10 +92,10 @@ def on_error(ws, error):
 
 def on_close(ws, status_code, msg):
     logger.error(f"WebSocket closed. code:{status_code} msg:{msg}")
-    bot()
+    start_bot()
 
 
-def bot():
+def start_bot():
     streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
     USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"  # NOQA
     SEND_MESSAGE = {"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}}

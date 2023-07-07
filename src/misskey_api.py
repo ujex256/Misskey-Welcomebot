@@ -113,9 +113,13 @@ def get_user_notes(user_id: str, until_id: str, limit: int):
 
 
 def can_renote(note: dict) -> bool:
-    """ノートがリノートに適しているか判定する
+    """リノート可能か判定する
 
-    ノートがパブリック投稿であり、リノートやリプライの投稿ではなければTrueを返す
+    Args:
+        note (dict): misskeyのノート
+
+    Returns:
+        bool: 可能か
     """
     is_public = note["visibility"] == "public"
     text_exists = note["text"] is not None
@@ -124,6 +128,14 @@ def can_renote(note: dict) -> bool:
 
 
 def can_reply(note: dict) -> bool:
+    """リプライ可能(pingノート)か判定
+
+    Args:
+        note (dict): misskeyのノート
+
+    Returns:
+        bool: リプライ可能か
+    """
     is_ping = "/ping" in note["text"]
     is_mention = f"@{USERNAME}" in note
     is_specified = note["visibility"] == "specified"
