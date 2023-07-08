@@ -22,11 +22,12 @@ class NGWords:
     def _load(self) -> None:
         with self._path.open() as f:
             data = f.read().split("\n")
-        data = [j for j in data if j != ""]
+        data = [j.lower() for j in data if j != ""]
         self._ng = {j for j in data if (j[0] != "-") and (j[0] != "#")}
         self._allow = {j[1:] for j in data if j[0] == "-"}
 
     def match(self, text) -> bool:
+        text = text.lower()
         ng = self.all_ng_words
         allow = self.all_excluded_words
         return any(x in text for x in ng) and (not any(x in text for x in allow))
