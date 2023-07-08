@@ -9,12 +9,11 @@ import websocket
 
 import utils
 import logging_styles
-import misskey_api as misskey
 from ngwords import NGWords
 from emojis import EmojiSet
 
 
-counter = utils.Counter(100, lambda: args[0].send("p"))  # NOQA
+counter = utils.Counter(100, lambda: print("lambda"))  # NOQA
 emojis = EmojiSet("response.json")
 ngw = NGWords("./ng_words/ngWords.txt")
 
