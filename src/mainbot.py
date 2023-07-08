@@ -61,18 +61,17 @@ def on_message(ws, message):
         ws.send("this is dummy message")
 
     # Renote不可ならreturn
-    return_flg = False
+    return_flg = True
     if ngw.match(note_text):
-        return_flg = True
         logger.info(f"Detected NG word. noteId: {note_id}, word: {ngw.why(note_text)}")
-    if misskey.can_reply(note_body):
-        return_flg = True
+    elif misskey.can_reply(note_body):
         Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
-    if not misskey.can_renote(note_body):
-        return_flg = True
-    if note_body["userId"] in set(have_note_user_ids):
-        return_flg = True
+    elif not misskey.can_renote(note_body):
+        pass
+    elif note_body["userId"] in set(have_note_user_ids):
         logger.debug("Skiped api request because it was registered in database.")
+    else:
+        return_flg = False
 
     if return_flg:
         return None
