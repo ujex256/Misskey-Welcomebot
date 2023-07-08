@@ -134,7 +134,7 @@ def get_user_notes(user_id: str, until_id: str, limit: int):
 
 
 def can_renote(note: dict) -> bool:
-    """リノート可能か判定する
+    """リノート可能か判定する(ノート数はカウントしていないので注意)
 
     Args:
         note (dict): misskeyのノート
