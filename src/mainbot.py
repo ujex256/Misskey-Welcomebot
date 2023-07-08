@@ -1,6 +1,7 @@
 import json
 import logging
 import pickle
+import os
 from collections import deque
 from threading import Thread
 
@@ -18,11 +19,13 @@ logger = logging.getLogger(__name__)
 logging_styles.set_default()
 coloredlogs.install(logger=logger)
 
+CONFIG_DIR = utils.config_dir()
+
 counter = utils.Counter(100, lambda: None)
 logging.info("Loading response.json...")
-emojis = EmojiSet("response.json")
+emojis = EmojiSet(os.path.join(CONFIG_DIR, "response.json"))
 logging.info("Loading ngWords.txt...")
-ngw = NGWords("./ng_words/ngWords.txt")
+ngw = NGWords(os.path.join(CONFIG_DIR, "ngwords.txt"))
 
 try:
     with open('./data/users.pickle', "rb") as f:

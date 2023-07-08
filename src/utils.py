@@ -1,5 +1,8 @@
 import time
+import os
 from typing import Any
+
+import dotenv
 
 
 class RateLimiter:
@@ -42,3 +45,11 @@ class Counter:
             resp = f(*args, **kwargs)
             return resp
         return wrapper
+
+
+def config_dir():
+    dotenv.load_dotenv()
+    dir = os.getenv("CONFIG_DIR", "./config")
+    if not os.path.exists(dir):
+        raise FileNotFoundError("Config directory not found.")
+    return dir
