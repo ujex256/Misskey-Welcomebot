@@ -4,6 +4,7 @@ __pycache__
 /test.py
 
 *.env
+.pytest_cache
 !sample.env
 data/users.pickle
 
