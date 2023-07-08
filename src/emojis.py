@@ -1,6 +1,5 @@
 import json
 import random
-from io import StringIO
 from typing import Any
 
 
@@ -9,19 +8,19 @@ class ConfigJsonError(Exception):
 
 
 class EmojiSet:
-    def __init__(self, data: str | StringIO) -> None:
+    def __init__(self, data: str | dict) -> None:
         if isinstance(data, str):
-            with open(data, "r") as f:
+            with open(data) as f:
                 loaded = json.load(f)
         else:
-            loaded = data.read()
+            loaded = data
         self._check_format(loaded)
 
         self.response_emojis = loaded["triggers"]
         self.others = loaded["others"]
 
     def _check_format(self, json: Any) -> None:
-        if not isinstance(json, dict) or tuple(json.keys()) != ("triggers", "others"):
+        if not isinstance(json, dict) or sorted(json.keys()) != ["others", "triggers"]:
             raise ConfigJsonError("response.jsonは{'triggers': [], 'others': []}の形にしてください。")
 
         if any([tuple(i.keys()) != ("keywords", "emoji") for i in json["triggers"]]):
