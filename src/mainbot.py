@@ -14,8 +14,14 @@ from ngwords import NGWords
 from emojis import EmojiSet
 
 
+logger = logging.getLogger(__name__)
+logging_styles.set_default()
+coloredlogs.install(logger=logger)
+
 counter = utils.Counter(100, lambda: None)
+logging.info("Loading response.json...")
 emojis = EmojiSet("response.json")
+logging.info("Loading ngWords.txt...")
 ngw = NGWords("./ng_words/ngWords.txt")
 
 try:
@@ -23,10 +29,6 @@ try:
         have_note_user_ids = pickle.load(f)
 except FileNotFoundError:
     have_note_user_ids = deque()
-
-logger = logging.getLogger(__name__)
-logging_styles.set_default()
-coloredlogs.install(logger=logger)
 
 
 # TODO: なんか良い名前に変えたい
@@ -116,4 +118,5 @@ def start_bot():
         header={"User-Agent": USER_AGENT}
     )
     ws.on_open = lambda ws: ws.send(json.dumps(SEND_MESSAGE))
+    logging.info("Bot was started!")
     ws.run_forever()
