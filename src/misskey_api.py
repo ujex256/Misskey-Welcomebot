@@ -158,7 +158,7 @@ def can_reply(note: dict) -> bool:
         bool: リプライ可能か
     """
     is_ping = "/ping" in note["text"]
-    is_mention = f"@{USERNAME}" in note
+    is_mention = f"@{USERNAME}" in note["text"]
     is_specified = note["visibility"] == "specified"
     return is_ping and is_mention or is_specified
 
