@@ -13,7 +13,7 @@ from utils import RateLimiter
 
 
 load_dotenv()
-HOST = getenv("HOST")
+HOST = getenv("HOST").replace("https://", "")
 TOKEN = getenv("SECRET-TOKEN")
 USERNAME = requests.post(f"https://{HOST}/api/i", json={"i": TOKEN}).json()["username"]
 
