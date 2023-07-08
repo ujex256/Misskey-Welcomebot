@@ -20,7 +20,7 @@ class EmojiSet:
         self.response_emojis = loaded["triggers"]
         self.others = loaded["others"]
 
-    def _check_format(json: Any) -> None:
+    def _check_format(self, json: Any) -> None:
         if not isinstance(json, dict) or tuple(json.keys()) != ("triggers", "others"):
             raise ConfigJsonError("response.jsonは{'triggers': [], 'others': []}の形にしてください。")
 
