@@ -63,7 +63,7 @@ def on_message(ws, message):
     # Renote不可ならreturn
     return_flg = True
     if ngw.match(note_text):
-        logger.info(f"Detected NG word. noteId: {note_id}, word: {ngw.why(note_text)}")
+        logger.info(f"Detected NG word. | noteId: {note_id}, word: {ngw.why(note_text)}")
     elif misskey.can_reply(note_body):
         Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
     elif not misskey.can_renote(note_body):
@@ -93,7 +93,7 @@ def on_message(ws, message):
         have_note_user_ids.append(note_body["userId"])
         if (count := len(have_note_user_ids)) % 100 == 0 and count < 100000:
             misskey.update_db("have_note_user_ids", have_note_user_ids, False)
-            logger.info(f"DataBase Updated. count: {count}")
+            logger.info(f"DataBase Updated. | length: {count}")
 
 
 def on_error(ws, error):
@@ -101,7 +101,7 @@ def on_error(ws, error):
 
 
 def on_close(ws, status_code, msg):
-    logger.error(f"WebSocket closed. code:{status_code} msg:{msg}")
+    logger.error(f"WebSocket closed. | code:{status_code} msg:{msg}")
     start_bot()
 
 
