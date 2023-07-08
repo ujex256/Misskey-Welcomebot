@@ -23,17 +23,22 @@ coloredlogs.install(logger=logger)
 
 limiter = RateLimiter(0.5)
 limiter2 = RateLimiter(0.5)
+TIMEOUT_SEC = 5
 
 
 def renote(note_id: str) -> None:
-    res = requests.post(
-        f"https://{HOST}/api/notes/create",
-        json={
-            "localOnly": True,
-            "renoteId": note_id,
-            "i": TOKEN,
-        },
-    )
+    try:
+        res = requests.post(
+            f"https://{HOST}/api/notes/create",
+            json={
+                "localOnly": True,
+                "renoteId": note_id,
+                "i": TOKEN,
+            },
+            timeout=TIMEOUT_SEC
+        )
+    except Timeout:
+        logger.warning("API timed out. | endpoint: notes/create")
     if res.ok:
         logger.info(f"Renoted! noteId: {note_id}")
     else:
@@ -41,14 +46,19 @@ def renote(note_id: str) -> None:
 
 
 def add_reaction(note_id: str, reaction: str) -> None:
-    res = requests.post(
-        f"https://{HOST}/api/notes/reactions/create",
-        json={
-            "noteId": note_id,
-            "reaction": reaction,
-            "i": TOKEN,
-        },
-    )
+    try:
+        res = requests.post(
+            f"https://{HOST}/api/notes/reactions/create",
+            json={
+                "noteId": note_id,
+                "reaction": reaction,
+                "i": TOKEN,
+            },
+            timeout=TIMEOUT_SEC
+        )
+    except Timeout:
+        logger.warning("API timed out. | endpoint: notes/reactions/create")
+        return None
     if res.ok:
         logger.info(f"Reaction added noteId: {note_id}, reaction: {reaction}")
     else:
@@ -56,15 +66,20 @@ def add_reaction(note_id: str, reaction: str) -> None:
 
 
 def reply(note_id: str, msg: str):
-    res = requests.post(
-        f"https://{HOST}/api/notes/create",
-        json={
-            "localOnly": True,
-            "text": msg,
-            "replyId": note_id,
-            "i": TOKEN,
-        },
-    )
+    try:
+        res = requests.post(
+            f"https://{HOST}/api/notes/create",
+            json={
+                "localOnly": True,
+                "text": msg,
+                "replyId": note_id,
+                "i": TOKEN,
+            },
+            timeout=TIMEOUT_SEC
+        )
+    except Timeout:
+        logger.warning("API timed out. | endpoint: notes/create")
+        return None
     if res.ok:
         logger.info(f"Replied! noteId: {note_id}, msg: {msg}")
     else:
@@ -85,14 +100,16 @@ def get_user_info(user_name: str = "", user_id: str = "") -> dict | None:
             body.pop("username")
         else:
             body.pop("userId")
-        user_info = requests.post(
+        res = requests.post(
             f"https://{HOST}/api/users/show",
             json=body,
-            timeout=5,
+            timeout=TIMEOUT_SEC,
         )
-        return user_info.json()
     except Timeout:
-        logger.warning("api timeout")
+        logger.warning("API timed out. | endpoint: users/show")
+        return None
+    if res.ok:
+        return res.json()
 
 
 @limiter2
@@ -104,14 +121,16 @@ def get_user_notes(user_id: str, until_id: str, limit: int):
             "limit": limit,
             "i": TOKEN,
         }
-        user_info = requests.post(
+        res = requests.post(
             f"https://{HOST}/api/users/notes",
             json=body,
-            timeout=5,
+            timeout=TIMEOUT_SEC,
         )
-        return user_info.json()
     except Timeout:
-        logger.warning("api timeout")
+        logger.warning("API timed out. | endpoint: users/notes")
+        return None
+    if res.ok:
+        return res.json()
 
 
 def can_renote(note: dict) -> bool:
