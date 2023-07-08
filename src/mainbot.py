@@ -9,11 +9,12 @@ import websocket
 
 import utils
 import logging_styles
+import misskey_api as misskey
 from ngwords import NGWords
 from emojis import EmojiSet
 
 
-counter = utils.Counter(100, lambda: print("lambda"))  # NOQA
+counter = utils.Counter(100, lambda: None)
 emojis = EmojiSet("response.json")
 ngw = NGWords("./ng_words/ngWords.txt")
 
@@ -42,6 +43,12 @@ def send_welcome(note_id: str, note_text: str) -> None:
 
 
 @counter
+def need():
+    if counter._now == 0:
+        return True
+    return False
+
+
 def on_message(ws, message):
     global have_note_user_ids
     note_body = json.loads(message)["body"]["body"]
@@ -49,6 +56,9 @@ def on_message(ws, message):
     note_text = note_body["text"]
     if note_text is None:
         note_text = ""
+
+    if need():  # 100回受信したならメッセージを送信
+        ws.send("this is dummy message")
 
     # Renote不可ならreturn
     return_flg = False
