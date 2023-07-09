@@ -22,9 +22,13 @@ def pong():
     return jsonify({"message": "Pong!"})
 
 
+def run_server():
+    app.run(host="0.0.0.0", port=8080)
+
+
 if __name__ == "__main__":
     load_dotenv()
     if getenv("RUN_SERVER", False):
-        Process(lambda x: app.run()).start()
+        Process(target=run_server).start()
         logging.info("Web server started!")
     start_bot()
