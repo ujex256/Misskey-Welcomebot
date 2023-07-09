@@ -21,7 +21,7 @@ replitはダウンタイムが多すぎるので切り捨てました()
 
 ## 設定
 1. `sample.env`の名前を`.env`に変更し、中を編集します。
-```sh
+```dotenv
 HOST=misskey.io  # host
 SECRET_TOKEN=token  # misskeyのtoken
 CONFIG_DIR=./config  # configフォルダを指定
