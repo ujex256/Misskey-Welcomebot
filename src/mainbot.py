@@ -22,9 +22,9 @@ coloredlogs.install(logger=logger)
 CONFIG_DIR = utils.config_dir()
 
 counter = utils.Counter(100, lambda: None)
-logging.info("Loading response.json...")
+logger.info("Loading response.json...")
 emojis = EmojiSet(os.path.join(CONFIG_DIR, "response.json"))
-logging.info("Loading ngWords.txt...")
+logger.info("Loading ngWords.txt...")
 ngw = NGWords(os.path.join(CONFIG_DIR, "ngwords.txt"))
 
 have_note_user_ids = utils.get_db()
@@ -117,5 +117,5 @@ def start_bot():
         header={"User-Agent": USER_AGENT}
     )
     ws.on_open = lambda ws: ws.send(json.dumps(SEND_MESSAGE))
-    logging.info("Bot was started!")
+    logger.info("Bot was started!")
     ws.run_forever()
