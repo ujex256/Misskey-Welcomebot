@@ -27,11 +27,7 @@ emojis = EmojiSet(os.path.join(CONFIG_DIR, "response.json"))
 logging.info("Loading ngWords.txt...")
 ngw = NGWords(os.path.join(CONFIG_DIR, "ngwords.txt"))
 
-try:
-    with open('./data/users.pickle', "rb") as f:
-        have_note_user_ids = pickle.load(f)
-except FileNotFoundError:
-    have_note_user_ids = deque()
+have_note_user_ids = utils.get_db()
 
 
 # TODO: なんか良い名前に変えたい
@@ -97,7 +93,7 @@ def on_message(ws, message):
     if notes_count > 5:
         have_note_user_ids.append(note_body["userId"])
         if (count := len(have_note_user_ids)) % 100 == 0 and count < 100000:
-            misskey.update_db("have_note_user_ids", have_note_user_ids, False)
+            utils.update_db("have_note_user_ids", have_note_user_ids, False)
             logger.info(f"DataBase Updated. | length: {count}")
 
 

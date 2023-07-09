@@ -163,11 +163,3 @@ def can_reply(note: dict) -> bool:
     is_mention = f"@{USERNAME}" in note["text"]
     is_specified = note["visibility"] == "specified"
     return is_ping and (is_mention or is_specified)
-
-
-# Misskeyに関係ない
-def update_db(key: str, value, allow_duplicates: bool = True) -> None:
-    if not allow_duplicates and isinstance(value, deque):
-        value = deque(set(value))
-    with open("./data/users.pickle", "wb") as f:
-        pickle.dump(value, f)

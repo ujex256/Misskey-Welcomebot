@@ -22,12 +22,15 @@ replitはダウンタイムが多すぎるので切り捨てました()
 ## 設定
 1. `sample.env`の名前を`.env`に変更し、中を編集します。
 ```sh
-HOST=misskey.io  # host 
+HOST=misskey.io  # host
 SECRET_TOKEN=token  # misskeyのtoken
 CONFIG_DIR=./config  # configフォルダを指定
-RUN_SERVER=False  # サーバーを建てるならTrue 
+RUN_SERVER=False  # サーバーを建てるならTrue
+DB_TYPE=redis  # redisかpickleで指定
+DB_URL=redis://dw  # redisならurlを入力
 ```
 2. response.jsonの編集
+このファイルはconfigディレクトリに保存してください。
 `keywords`にトリガーとなるキーワードを**配列**で指定してください。
 
 `emoji`に反応する絵文字の一覧を指定してください。ここは配列か文字列にしてください。配列の場合はランダムで選択します。

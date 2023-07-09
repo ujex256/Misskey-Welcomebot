@@ -1,6 +1,8 @@
 import time
 import os
+import pickle
 from typing import Any
+from collections import deque
 
 import dotenv
 
@@ -53,3 +55,39 @@ def config_dir():
     if not os.path.exists(dir):
         raise FileNotFoundError("Config directory not found.")
     return dir
+
+
+def db_type():
+    dotenv.load_dotenv()
+    return os.getenv("DB_TYPE")
+
+
+def update_db(key: str, value, allow_duplicates: bool = True) -> None:
+    if not allow_duplicates:
+        value = set(value)
+
+    if db_type() == "redis":
+        import redis
+        dotenv.load_dotenv()
+
+        r = redis.from_url(os.getenv("DB_URL"))
+        r.sadd("have_note_user_ids", *value)
+    elif db_type() == "pickle":
+        with open("./data/users.pickle", "wb") as f:
+            pickle.dump(deque(value), f)
+
+
+def get_db():
+    if db_type() == "redis":
+        import redis
+        dotenv.load_dotenv()
+
+        r = redis.from_url(os.getenv("DB_URL"))
+        return deque(map(lambda x: x.decode(), r.smembers("have_note_user_ids")))
+    elif db_type() == "pickle":
+        try:
+            with open('./data/users.pickle', "rb") as f:
+                have_note_user_ids = pickle.load(f)
+        except FileNotFoundError:
+            have_note_user_ids = deque()
+        return have_note_user_ids
