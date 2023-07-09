@@ -34,7 +34,7 @@ class NGWords:
 
     def why(self, text) -> str | None:
         for i in self.all_ng_words:
-            if i in text:
+            if i in text.lower():
                 return i
         return None
 
