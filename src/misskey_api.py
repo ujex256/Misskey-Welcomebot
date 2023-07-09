@@ -145,7 +145,7 @@ def can_renote(note: dict) -> bool:
     is_public = note["visibility"] == "public"
     text_exists = note["text"] is not None
     is_reply = note["replyId"] is not None
-    return (is_public) and (text_exists) and (not is_reply)
+    return is_public and text_exists and not is_reply
 
 
 def can_reply(note: dict) -> bool:
@@ -157,10 +157,12 @@ def can_reply(note: dict) -> bool:
     Returns:
         bool: リプライ可能か
     """
+    if note["text"] is None:
+        return False
     is_ping = "/ping" in note["text"]
     is_mention = f"@{USERNAME}" in note["text"]
     is_specified = note["visibility"] == "specified"
-    return is_ping and is_mention or is_specified
+    return is_ping and (is_mention or is_specified)
 
 
 # Misskeyに関係ない
