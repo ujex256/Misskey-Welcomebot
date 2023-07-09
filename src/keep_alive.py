@@ -30,5 +30,5 @@ if __name__ == "__main__":
     load_dotenv()
     if getenv("RUN_SERVER", False):
         Process(target=run_server).start()
-        logging.info("Web server started!")
+        logger.info("Web server started!")
     start_bot()
