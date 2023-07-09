@@ -1,0 +1,44 @@
+[
+    {
+        "text": "hello, world",
+        "visibility": "public",
+        "replyId": null,
+        "r": true
+    },
+    {
+        "text": "hello, world",
+        "visibility": "specified",
+        "replyId": null,
+        "r": false
+    },
+    {
+        "text": "hello",
+        "visibility": "public",
+        "replyId": "123456789",
+        "r": false
+    },
+    {
+        "text": "hello",
+        "visibility": "home",
+        "replyId": "123456789",
+        "r": false
+    },
+    {
+        "text": null,
+        "visibility": "public",
+        "replyId": null,
+        "r": false
+    },
+    {
+        "text": null,
+        "visibility": "home",
+        "replyId": null,
+        "r": false
+    },
+    {
+        "text": null,
+        "visibility": "home",
+        "replyId": "123456789",
+        "r": false
+    }
+]
