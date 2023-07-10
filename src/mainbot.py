@@ -16,7 +16,7 @@ from emojis import EmojiSet
 class Bot:
     counter = utils.Counter(100, lambda: None)
 
-    def __init__(self):
+    def __init__(self) -> None:
         logger = logging.getLogger(__name__)
         logging_styles.set_default()
         coloredlogs.install(logger=logger)
@@ -44,12 +44,12 @@ class Bot:
         Thread(target=misskey.renote, args=(note_id,)).start()
 
     @counter
-    def need(self):
+    def need(self) -> bool:
         if self.counter._now == 0:
             return True
         return False
 
-    def on_message(self, ws, message):
+    def on_message(self, ws, message: str) -> None:
         note_body = json.loads(message)["body"]["body"]
         note_id = note_body["id"]
         note_text = note_body["text"]
@@ -88,7 +88,7 @@ class Bot:
             notes = misskey.get_user_notes(note_body["userId"], note_id, 10)
             if all([not misskey.can_renote(note) for note in notes]):
                 self.send_welcome(note_id, note_text)
-                return
+                return None
 
         if notes_count > 5:
             self.db.append(note_body["userId"])
@@ -96,10 +96,10 @@ class Bot:
                 utils.update_db("have_note_user_ids", self.db, False)
                 self.logger.info(f"DataBase Updated. | length: {count}")
 
-    def on_error(self, ws, error):
+    def on_error(self, ws, error) -> None:
         self.logger.warning(str(error))
 
-    def on_close(self, ws, status_code, msg):
+    def on_close(self, ws, status_code, msg) -> None:
         self.logger.error(f"WebSocket closed. | code:{status_code} msg:{msg}")
         self.start_bot()
 
