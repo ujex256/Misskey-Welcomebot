@@ -27,9 +27,11 @@ SECRET_TOKEN=token  # misskeyのtoken
 CONFIG_DIR=./config  # configフォルダを指定
 RUN_SERVER=False  # サーバーを建てるならTrue
 DB_TYPE=redis  # redisかpickleで指定
-DB_URL=redis://dw  # redisならurlを入力
+DB_URL=redis://dw  # redisならurlを入力(pickleなら不要)
 ```
+
 2. response.jsonの編集
+
 このファイルはconfigディレクトリに保存してください。
 `keywords`にトリガーとなるキーワードを**配列**で指定してください。
 
@@ -63,3 +65,14 @@ otherにはトリガーにあてはまらなかった場合の絵文字を指定
     ]
 }
 ```
+
+3. NGワードの設定
+
+configディレクトリにngwords.txtを作成します。
+NGワードを記述します。
+
+書式
+- 除外するワードは-をつけてから書きます(スペースはつけない)
+- #から始めるとコメントになります。
+
+4. keep_alive.pyを起動
