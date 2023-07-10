@@ -1,0 +1,42 @@
+[
+    {
+        "text": "@youkoso_bot /ping",
+        "visibility": "public",
+        "r": true
+    },
+    {
+        "text": "@youkoso_bot waaaaaaaa",
+        "visibility": "public",
+        "r": false
+    },
+    {
+        "text": "/ping",
+        "visibility": "specified",
+        "r": true
+    },
+    {
+        "text": "@youkoso_bot /ping abdefg",
+        "visibility": "public",
+        "r": true
+    },
+    {
+        "text": "hello",
+        "visibility": "public",
+        "r": false
+    },
+    {
+        "text": "hello",
+        "visibility": "specified",
+        "r": false
+    },
+    {
+        "text": "@youkoso_bot hello",
+        "visibility": "public",
+        "r": false
+    },
+    {
+        "text": null,
+        "visibility": "home",
+        "r": false
+    }
+]

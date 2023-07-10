@@ -2,7 +2,7 @@ import logging
 import coloredlogs
 
 DEFAULT_LOG_LEVEL = logging.DEBUG
-DEFAULT_LOG_FORMAT = "%(asctime)s - [%(levelname)s] - %(filename)s - %(message)s"
+DEFAULT_LOG_FORMAT = "%(asctime)s - [%(levelname)s] - %(filename)s - %(message)s"  # NOQA
 DEFAULT_DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
 DEFAULT_FIELD_STYLES = {
     "asctime": {"color": "green"},
@@ -18,6 +18,7 @@ DEFAULT_LEVEL_STYLES = {
     "error": {"color": "red"},
     "critical": {"color": "red"},
 }
+
 
 def set_default():
     coloredlogs.DEFAULT_LOG_LEVEL = DEFAULT_LOG_LEVEL

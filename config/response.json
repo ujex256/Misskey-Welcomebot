@@ -1,0 +1,34 @@
+{
+    "triggers": [
+        {
+            "keywords": ["レターパック", ":5000", "れたはす"],
+            "emoji": ":send_money:"
+        },
+        {
+            "keywords": ["yosano", "与謝野晶子"],
+            "emoji": [
+                ":yosano_akiko_is_always_watching_you:",
+                ":yosano_akiko:",
+                ":yosano_party:",
+                ":petthex_yosano_akiko:",
+                ":youseino_akiko:"
+            ]
+        },
+        {
+            "keywords": [":send_money:"],
+            "emoji": ":is_all_scam:"
+        },
+        {
+            "keywords": ["ろぐぼ", "ログインボーナス"],
+            "emoji": ":opera:"
+        }
+    ],
+    "others": [
+        ":youkoso:",
+        ":youkoso_send_money:",
+        ":send_money:",
+        ":welcome_to_underground:",
+        ":supertada:",
+        ":yorosiku_onegai:"
+    ]
+}
