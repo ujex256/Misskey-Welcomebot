@@ -16,11 +16,12 @@ from emojis import EmojiSet
 class Bot:
     counter = utils.Counter(100, lambda: None)
 
-    def __init__(self) -> None:
+    def __init__(self, restart: bool = True) -> None:
         logger = logging.getLogger(__name__)
         logging_styles.set_default()
         coloredlogs.install(logger=logger)
         self.logger = logger
+        self._restart = restart
 
         self.config_dir = utils.config_dir()
 
@@ -100,8 +101,9 @@ class Bot:
         self.logger.warning(str(error))
 
     def on_close(self, ws, status_code, msg) -> None:
-        self.logger.error(f"WebSocket closed. | code:{status_code} msg:{msg}")
-        self.start_bot()
+        self.logger.error(f"WebSocket closed. | code:{status_code} msg: {msg}")
+        if self._restart:
+            self.start_bot()
 
     def start_bot(self):
         streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
