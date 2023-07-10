@@ -93,7 +93,7 @@ class Bot:
 
         if notes_count > 5:
             self.db.append(note_body["userId"])
-            if (count := len(self.db)) % 100 == 0 and count < 100000:
+            if (count := len(self.db)) % 100 == 0:
                 utils.update_db("have_note_user_ids", self.db, False)
                 self.logger.info(f"DataBase Updated. | length: {count}")
 
