@@ -27,7 +27,7 @@ class Bot:
 
         logger.info("Loading response.json...")
         self.emojis = EmojiSet(os.path.join(self.config_dir, "response.json"))
-        logger.info("Loading ngWords.txt...")
+        logger.info("Loading ngwords.txt...")
         self.ngw = NGWords(os.path.join(self.config_dir, "ngwords.txt"))
 
         self.db = utils.get_db()
