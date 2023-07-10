@@ -1,7 +1,5 @@
 env/
 __pycache__
-/a.json
-/test.py
 
 *.env
 .pytest_cache
@@ -9,5 +7,6 @@ __pycache__
 data/users.pickle
 
 !.vscode/settings.json
+.vscode/
 
 ngWords.txt
