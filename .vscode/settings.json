@@ -1,0 +1,7 @@
+{
+    "cSpell.words": [
+        "dotenv"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}
