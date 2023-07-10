@@ -31,4 +31,4 @@ if __name__ == "__main__":
     if getenv("RUN_SERVER", False):
         Process(target=run_server).start()
         logger.info("Web server started!")
-    mainbot.start_bot()
+    mainbot.Bot().start_bot()
