@@ -1,8 +1,6 @@
 import json
 import logging
-import pickle
 import os
-from collections import deque
 from threading import Thread
 
 import coloredlogs
