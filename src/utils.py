@@ -71,7 +71,10 @@ def update_db(key: str, value, allow_duplicates: bool = True) -> None:
         dotenv.load_dotenv()
 
         r = redis.from_url(os.getenv("DB_URL"))
-        r.sadd("have_note_user_ids", *value)
+        p = r.pipeline()
+        for i in value:
+            p.sadd("have_note_user_ids", i)
+        p.execute()
     elif db_type() == "pickle":
         with open("./data/users.pickle", "wb") as f:
             pickle.dump(deque(value), f)
