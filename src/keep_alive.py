@@ -7,10 +7,10 @@ from dotenv import load_dotenv
 from flask import Flask, jsonify
 
 import logging_styles
-from mainbot import start_bot
+import mainbot
 
 
-app = Flask(__name__)
+app = Flask("app")
 
 logger = logging.getLogger(__name__)
 logging_styles.set_default()
@@ -31,4 +31,4 @@ if __name__ == "__main__":
     if getenv("RUN_SERVER", False):
         Process(target=run_server).start()
         logger.info("Web server started!")
-    start_bot()
+    mainbot.start_bot()
