@@ -10,6 +10,11 @@
         "r": false
     },
     {
+        "text": "@youkoso_bot /ping abdefgaaaaaaaa",
+        "visibility": "specified",
+        "r": true
+    },
+    {
         "text": "/ping",
         "visibility": "specified",
         "r": true
