@@ -4,7 +4,7 @@ import os
 from threading import Thread
 
 import coloredlogs
-import websocket
+import websockets
 
 import utils
 import logging_styles
@@ -105,16 +105,23 @@ class Bot:
         if self._restart:
             self.start_bot()
 
-    def start_bot(self):
+    async def start_bot(self):
         streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
         USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"  # NOQA
         MESSAGE = {"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}}
-        # WebSocketの接続
-        ws = websocket.WebSocketApp(
-            streaming_api,
-            on_message=self.on_message, on_error=self.on_error, on_close=self.on_close,
-            header={"User-Agent": USER_AGENT}
-        )
-        ws.on_open = lambda ws: ws.send(json.dumps(MESSAGE))
-        self.logger.info("Bot was started!")
-        ws.run_forever()
+
+        async with websockets.connect(streaming_api, user_agent_header=USER_AGENT) as ws:
+            # self.on_open(ws)
+            self.logger.info("Bot was started!")
+            await ws.send(json.dumps(MESSAGE))
+            while True:
+                try:
+                    msg = await ws.recv()
+                    # await self.on_message(ws, msg)
+                    pass
+                except websockets.ConnectionClosed:
+                    # await self.on_close(ws, ws.close_code, ws.close_reason)
+                    pass
+                except Exception as e:
+                    # await self.on_error(ws, e)
+                    pass
