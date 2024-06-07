@@ -15,6 +15,7 @@ packaging==24.0
 pluggy==1.5.0
 pyreadline3==3.4.1
 pytest==8.2.2
+python-dotenv==1.0.1
 redis==5.0.5
 requests==2.32.3
 urllib3==2.2.1
