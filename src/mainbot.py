@@ -50,7 +50,7 @@ class Bot:
             return True
         return False
 
-    def on_message(self, ws, message: str) -> None:
+    async def on_message(self, ws, message: str) -> None:
         note_body = json.loads(message)["body"]["body"]
         note_id = note_body["id"]
         note_text = note_body["text"]
@@ -97,31 +97,34 @@ class Bot:
                 utils.update_db("have_note_user_ids", self.db, False)
                 self.logger.info(f"DataBase Updated. | length: {count}")
 
-    def on_error(self, ws, error) -> None:
+    async def on_error(self, ws, error) -> None:
         self.logger.warning(str(error))
 
-    def on_close(self, ws, status_code, msg) -> None:
+    async def on_close(self, ws, status_code, msg) -> bool:
         self.logger.error(f"WebSocket closed. | code:{status_code} msg: {msg}")
-        if self._restart:
-            self.start_bot()
+        return self._restart
 
     async def start_bot(self):
         streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
         USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"  # NOQA
-        MESSAGE = {"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}}
+        CONNECTMSG = {"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}}
 
-        async with websockets.connect(streaming_api, user_agent_header=USER_AGENT) as ws:
-            # self.on_open(ws)
-            self.logger.info("Bot was started!")
-            await ws.send(json.dumps(MESSAGE))
-            while True:
-                try:
-                    msg = await ws.recv()
-                    # await self.on_message(ws, msg)
-                    pass
-                except websockets.ConnectionClosed:
-                    # await self.on_close(ws, ws.close_code, ws.close_reason)
-                    pass
-                except Exception as e:
-                    # await self.on_error(ws, e)
-                    pass
+        while True:
+            flg = False
+            async with websockets.connect(streaming_api, user_agent_header=USER_AGENT) as ws:
+                # self.on_open(ws)
+                self.logger.info("Bot was started!")
+                await ws.send(json.dumps(CONNECTMSG))
+                while True:
+                    try:
+                        msg = await ws.recv()
+                        await self.on_message(ws, str(msg))
+                        pass
+                    except websockets.ConnectionClosed:
+                        flg = await self.on_close(ws, ws.close_code, ws.close_reason)
+                        break
+                    except Exception as e:
+                        # await self.on_error(ws, e)
+                        pass
+            if not flg:
+                break
