@@ -64,8 +64,10 @@ class Bot:
         # Renote不可ならreturn
         return_flg = True
         if self.ngw.match(note_text):
-            self.logger.info(f"Detected NG word. | noteId: {note_id}, \
-                               word: {self.ngw.why(note_text)}")
+            self.logger.info(
+                f"Detected NG word. | noteId: {note_id}, \
+                               word: {self.ngw.why(note_text)}"
+            )
         elif misskey.can_reply(note_body):
             Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
         elif not misskey.can_renote(note_body):
@@ -107,7 +109,10 @@ class Bot:
     async def start_bot(self):
         streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
         USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"  # NOQA
-        CONNECTMSG = {"type": "connect", "body": {"channel": "hybridTimeline", "id": "1"}}
+        CONNECTMSG = {
+            "type": "connect",
+            "body": {"channel": "hybridTimeline", "id": "1"},
+        }
 
         while True:
             flg = False
@@ -119,12 +124,10 @@ class Bot:
                     try:
                         msg = await ws.recv()
                         await self.on_message(ws, str(msg))
-                        pass
                     except websockets.ConnectionClosed:
                         flg = await self.on_close(ws, ws.close_code, ws.close_reason)
                         break
                     except Exception as e:
-                        # await self.on_error(ws, e)
-                        pass
+                        await self.on_error(ws, e)
             if not flg:
                 break
