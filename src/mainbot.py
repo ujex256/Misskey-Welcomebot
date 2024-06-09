@@ -1,3 +1,4 @@
+import asyncio
 import json
 import logging
 import os
@@ -131,3 +132,4 @@ class Bot:
                         await self.on_error(ws, e)
             if not flg:
                 break
+            await asyncio.sleep(5)
