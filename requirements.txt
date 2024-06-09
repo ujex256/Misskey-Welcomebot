@@ -11,7 +11,6 @@ iniconfig==2.0.0
 itsdangerous==2.2.0
 Jinja2==3.1.4
 MarkupSafe==2.1.5
-Misskey.py==4.1.0
 packaging==24.0
 pluggy==1.5.0
 pyreadline3==3.4.1
