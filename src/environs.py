@@ -1,7 +1,8 @@
-from pydantic import RedisDsn
-from pydantic_settings import BaseSettings, SettingsConfigDict
-
+from pathlib import Path
 from typing import Literal
+
+from pydantic import DirectoryPath, RedisDsn
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DotenvSettings(BaseSettings):
@@ -15,5 +16,5 @@ class Settings(DotenvSettings):
     db_type: Literal["redis", "pickle"] = "redis"
     db_url: RedisDsn
 
-    config_dir: str = "./config"
+    config_dir: DirectoryPath = Path("./config")
     run_server: bool = False
