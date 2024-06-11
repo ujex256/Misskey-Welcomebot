@@ -1,10 +1,8 @@
 import pickle
-import logging
 from os import getenv
 from collections import deque
 
 import requests
-import coloredlogs
 from dotenv import load_dotenv
 from requests import Timeout
 
@@ -17,9 +15,7 @@ HOST = getenv("HOST").replace("https://", "")
 TOKEN = getenv("SECRET_TOKEN")
 USERNAME = requests.post(f"https://{HOST}/api/i", json={"i": TOKEN}).json()["username"]
 
-logger = logging.getLogger(__name__)
-logging_styles.set_default()
-coloredlogs.install(logger=logger)
+logger = logging_styles.getLogger(__name__)
 
 limiter = RateLimiter(0.5)
 limiter2 = RateLimiter(0.5)

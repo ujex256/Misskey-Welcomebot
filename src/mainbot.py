@@ -1,9 +1,7 @@
 import asyncio
 import json
-import logging
 from threading import Thread
 
-import coloredlogs
 import websockets
 
 import utils
@@ -19,18 +17,15 @@ class Bot:
     counter = utils.Counter(100, lambda: None)
 
     def __init__(self, settings: Settings, restart: bool = True) -> None:
-        logger = logging.getLogger(__name__)
-        logging_styles.set_default()
-        coloredlogs.install(logger=logger)
+        self.logger = logging_styles.getLogger(__name__)
         self.config = settings
-        self.logger = logger
         self._restart = restart
 
         self.config_dir = self.config.config_dir
 
-        logger.info("Loading response.json...")
+        self.logger.info("Loading response.json...")
         self.emojis = EmojiSet(str(self.config_dir.joinpath("response.json")))
-        logger.info("Loading ngwords.txt...")
+        self.logger.info("Loading ngwords.txt...")
         self.ngw = NGWords(str(self.config_dir.joinpath("ngwords.txt")))
 
         self.db = UserDB(str(self.config.db_url))  # TODO: redis以外への対応

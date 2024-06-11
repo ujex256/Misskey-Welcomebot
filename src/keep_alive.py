@@ -1,8 +1,6 @@
-import logging
 from multiprocessing import Process
 from os import getenv
 
-import coloredlogs
 from dotenv import load_dotenv
 from flask import Flask, jsonify
 
@@ -12,9 +10,7 @@ import mainbot
 
 app = Flask("app")
 
-logger = logging.getLogger(__name__)
-logging_styles.set_default()
-coloredlogs.install(logger=logger)
+logger = logging_styles.getLogger(__name__)
 
 
 @app.get("/")
