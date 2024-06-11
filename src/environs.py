@@ -1,7 +1,7 @@
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Optional
 
-from pydantic import DirectoryPath, RedisDsn, Field
+from pydantic import DirectoryPath, RedisDsn, Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -14,7 +14,13 @@ class Settings(DotenvSettings):
     secret_token: str = Field(default=...)
 
     db_type: Literal["redis", "pickle"] = "redis"
-    db_url: RedisDsn = Field(default=...)
+    db_url: Optional[RedisDsn] = None
 
     config_dir: DirectoryPath = Path("./config")
     run_server: bool = False
+
+    @model_validator(mode="after")
+    def required_when_redis(self):
+        if self.db_url is None and self.db_type == "redis":
+            raise ValueError("DB_URL is required when DB_TYPE is redis")
+        return self
