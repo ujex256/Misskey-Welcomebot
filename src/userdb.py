@@ -33,15 +33,17 @@ class UserDB:
 
     async def get_user_by_name(self, aas: str) -> UserInfo | None:
         await self._migrate()
-        a = UserInfo.find(UserInfo.user_name == aas)
+        found = UserInfo.find(UserInfo.user_name == aas)
         try:
-            return await a.first()  # type: ignore
+            return await found.first()  # type: ignore
         except NotFoundError:
             return None
 
     async def add_user(self, user_id: str, username: str) -> None:
         await UserInfo(
-            user_id=user_id, user_name=username, last_received_date=datetime.now()
+            user_id=user_id,
+            user_name=username,
+            last_received_date=datetime.now()
         ).save()
 
     async def _migrate(self) -> None:
