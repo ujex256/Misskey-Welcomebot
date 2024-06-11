@@ -1,9 +1,14 @@
 import asyncio
+from datetime import datetime
 
 from pydantic import PastDatetime
-from aredis_om import HashModel, Migrator, get_redis_connection, Field, NotFoundError
-
-from datetime import datetime
+from aredis_om import (
+    HashModel,
+    Migrator,
+    get_redis_connection,
+    Field,
+    NotFoundError,
+)
 
 
 class UserInfo(HashModel):
