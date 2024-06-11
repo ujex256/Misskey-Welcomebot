@@ -113,7 +113,6 @@ class Bot:
         }
 
         while True:
-            flg = False
             async with websockets.connect(streaming_api, user_agent_header=USER_AGENT) as ws:
                 # self.on_open(ws)
                 self.logger.info("Bot was started!")
@@ -123,10 +122,10 @@ class Bot:
                         msg = await ws.recv()
                         await self.on_message(ws, str(msg))
                     except websockets.ConnectionClosed:
-                        flg = await self.on_close(ws, ws.close_code, ws.close_reason)
+                        await self.on_close(ws, ws.close_code, ws.close_reason)
+                        if not self._restart:
+                            return
                         break
                     except Exception as e:
                         await self.on_error(ws, e)
-            if not flg:
-                break
             await asyncio.sleep(5)
