@@ -39,12 +39,12 @@ class UserDB:
         except NotFoundError:
             return None
 
-    async def add_user(self, user_id: str, username: str):
+    async def add_user(self, user_id: str, username: str) -> None:
         await UserInfo(
             user_id=user_id, user_name=username, last_received_date=datetime.now()
         ).save()
 
-    async def _migrate(self):
+    async def _migrate(self) -> None:
         await Migrator().run()
 
 
