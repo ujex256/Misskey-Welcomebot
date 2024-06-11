@@ -70,7 +70,7 @@ class Bot:
             Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
         elif not misskey.can_renote(note_body):
             pass
-        elif self.db.get_user_by_id(note_body["userId"]) is None:
+        elif await self.db.get_user_by_id(note_body["userId"]) is None:
             self.logger.debug("Skiped api request because it was registered in DB.")
         else:
             return_flg = False
@@ -92,10 +92,8 @@ class Bot:
                 return None
 
         if notes_count > 5:
-            self.db.add_user(note_body["userId"], note_body["user"]["name"])
-            if (count := len(self.db)) % 100 == 0:
-                utils.update_db("have_note_user_ids", self.db, False)
-                self.logger.info(f"DataBase Updated. | length: {count}")
+            await self.db.add_user(note_body["userId"], note_body["user"]["name"])
+            self.logger.info(f"DataBase Updated.")
 
     async def on_error(self, ws, error) -> None:
         self.logger.warning(str(error))
