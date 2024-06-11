@@ -1,7 +1,6 @@
 import asyncio
 import json
 import logging
-import os
 from threading import Thread
 
 import coloredlogs
@@ -10,6 +9,8 @@ import websockets
 import utils
 import logging_styles
 import misskey_api as misskey
+from environs import Settings
+from userdb import UserDB
 from ngwords import NGWords
 from emojis import EmojiSet
 
@@ -17,21 +18,22 @@ from emojis import EmojiSet
 class Bot:
     counter = utils.Counter(100, lambda: None)
 
-    def __init__(self, restart: bool = True) -> None:
+    def __init__(self, settings: Settings, restart: bool = True) -> None:
         logger = logging.getLogger(__name__)
         logging_styles.set_default()
         coloredlogs.install(logger=logger)
+        self.config = settings
         self.logger = logger
         self._restart = restart
 
-        self.config_dir = utils.config_dir()
+        self.config_dir = self.config.config_dir
 
         logger.info("Loading response.json...")
-        self.emojis = EmojiSet(os.path.join(self.config_dir, "response.json"))
+        self.emojis = EmojiSet(str(self.config_dir.joinpath("response.json")))
         logger.info("Loading ngwords.txt...")
-        self.ngw = NGWords(os.path.join(self.config_dir, "ngwords.txt"))
+        self.ngw = NGWords(str(self.config_dir.joinpath("ngwords.txt")))
 
-        self.db = utils.get_db()
+        self.db = UserDB(str(self.config.db_url))  # TODO: redis以外への対応
 
     # TODO: なんか良い名前に変えたい
     def send_welcome(self, note_id: str, note_text: str) -> None:
