@@ -1,11 +1,11 @@
+import asyncio
 from multiprocessing import Process
-from os import getenv
 
-from dotenv import load_dotenv
 from flask import Flask, jsonify
 
 import logging_styles
 import mainbot
+import environs
 
 
 app = Flask("app")
@@ -23,8 +23,8 @@ def run_server():
 
 
 if __name__ == "__main__":
-    load_dotenv()
-    if getenv("RUN_SERVER", False):
+    config = environs.Settings()
+    if config.run_server:
         Process(target=run_server).start()
         logger.info("Web server started!")
-    mainbot.Bot().start_bot()
+    asyncio.run(mainbot.Bot(config).start_bot())
