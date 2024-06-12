@@ -1,6 +1,5 @@
 import json
 import random
-from typing import Any
 
 
 class ConfigJsonError(Exception):
@@ -19,7 +18,7 @@ class EmojiSet:
         self.response_emojis = loaded["triggers"]
         self.others = loaded["others"]
 
-    def _check_format(self, json: Any) -> None:
+    def _check_format(self, json: dict) -> None:
         if not isinstance(json, dict) or sorted(json.keys()) != ["others", "triggers"]:
             raise ConfigJsonError(
                 "response.jsonは{'triggers': [], 'others': []}の形にしてください。"
