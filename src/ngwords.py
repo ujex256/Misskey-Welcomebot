@@ -11,7 +11,7 @@ class NGWords:
         self._path = pathlib.Path(path)
         self._load()
 
-    def __getitem__(self, key) -> dict:
+    def __getitem__(self, key) -> set:
         if (key := key.lower()) == "ng":
             return self._ng
         elif key == "excluded":
