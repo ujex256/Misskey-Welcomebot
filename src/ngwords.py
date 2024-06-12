@@ -1,4 +1,6 @@
-import pathlib
+import os
+
+from utils import load_from_path
 
 
 class NGWords:
@@ -7,8 +9,8 @@ class NGWords:
 
     initにngワードのテキストファイルのパスを渡してください。
     """
-    def __init__(self, path) -> None:
-        self._path = pathlib.Path(path)
+    def __init__(self, path: str | os.PathLike) -> None:
+        self.raw = load_from_path(path)
         self._load()
 
     def __getitem__(self, key) -> set:
@@ -20,8 +22,7 @@ class NGWords:
             raise KeyError('"ng"か"excluded"を指定してください')
 
     def _load(self) -> None:
-        with self._path.open() as f:
-            data = f.read().split("\n")
+        data = self.raw.split("\n")
         data = [j.lower() for j in data if j != ""]
         self._ng = {j for j in data if (j[0] != "-") and (j[0] != "#")}
         self._allow = {j[1:] for j in data if j[0] == "-"}

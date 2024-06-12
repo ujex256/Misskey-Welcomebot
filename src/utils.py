@@ -1,5 +1,11 @@
 import time
-from typing import Any
+from typing import Any, TypeVar, Type
+
+import json
+from os import PathLike
+
+
+T = TypeVar("T")
 
 
 class RateLimiter:
@@ -33,7 +39,7 @@ class Counter:
         self.do = do
 
     def __call__(self, f) -> Any:
-        def wrapper(*args, **kwargs):
+        def wrapper(*args: f.args, **kwargs):
             self._now += 1
             if self._now == self.count:
                 self._now = 0
@@ -42,3 +48,18 @@ class Counter:
             resp = f(*args, **kwargs)
             return resp
         return wrapper
+
+def load_from_path(path: str | PathLike | T, extend: Type[T] = Type[Any]) -> str | T:
+    if not isinstance(path, (str, PathLike, extend)):
+        raise TypeError(f"Invalid type for path: {type(path)}. Expected str, PathLike, or {extend.__name__}.")
+
+    if isinstance(path, extend):
+        return path
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
+
+
+def load_from_json_path(path: str | PathLike | T, extend: Type[T] = Type[Any]) -> dict | T:
+    if isinstance(path, extend):
+        return path
+    return json.loads(load_from_path(path))

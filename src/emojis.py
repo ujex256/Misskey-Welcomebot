@@ -1,5 +1,6 @@
-import json
 import random
+
+from utils import load_from_json_path
 
 
 class ConfigJsonError(Exception):
@@ -8,11 +9,7 @@ class ConfigJsonError(Exception):
 
 class EmojiSet:
     def __init__(self, data: str | dict) -> None:
-        if isinstance(data, str):
-            with open(data) as f:
-                loaded = json.load(f)
-        else:
-            loaded = data
+        loaded = load_from_json_path(data, dict)
         self._check_format(loaded)
 
         self.response_emojis = loaded["triggers"]
