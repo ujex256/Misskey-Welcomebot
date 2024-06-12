@@ -1,6 +1,11 @@
 {
     "cSpell.words": [
-        "dotenv"
+        "coloredlogs",
+        "dotenv",
+        "levelname",
+        "misskey",
+        "renote",
+        "websockets"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
