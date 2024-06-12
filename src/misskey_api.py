@@ -1,6 +1,4 @@
-import pickle
 from os import getenv
-from collections import deque
 
 import requests
 from dotenv import load_dotenv

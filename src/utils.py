@@ -1,10 +1,5 @@
 import time
-import os
-import pickle
 from typing import Any
-from collections import deque
-
-import dotenv
 
 
 class RateLimiter:
