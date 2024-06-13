@@ -56,8 +56,10 @@ class UserDB:
 
 
 if __name__ == "__main__":
-    import asyncio
+    import asyncio, environs
 
-    DB_URL = "redis://localhost:6379"
-    db = UserDB(DB_URL)
-    print(type(asyncio.run(db.get_user_by_name("ffdi"))))
+    db_url = environs.Settings().db_url
+    if db_url is None:
+        exit(print("db_type is not redis"))
+    db = UserDB(str(db_url))
+    print(asyncio.run(db.get_user_by_name("ffdi")))
