@@ -23,9 +23,17 @@ class NGWords:
 
     def _load(self) -> None:
         data = self.raw.split("\n")
-        data = [j.lower() for j in data if j != ""]
-        self._ng = {j for j in data if (j[0] != "-") and (j[0] != "#")}
-        self._allow = {j[1:] for j in data if j[0] == "-"}
+        data = [i.lower() for i in data if i != ""]
+
+        ng = set()
+        allow = set()
+        for i in data:
+            if i[0] == "-":
+                allow.add(i[1:].lstrip(" "))
+            elif i[0] != "#":
+                ng.add(i)
+        self._ng = ng
+        self._allow = allow
 
     def match(self, text) -> bool:
         text = text.lower()
