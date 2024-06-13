@@ -33,15 +33,15 @@ class UserDB:
         all_pks = await UserInfo.all_pks()
         return await asyncio.gather(*[UserInfo.get(i) async for i in all_pks])
 
-    async def get_user_by_id(self, user_id: str) -> UserInfo | None:
+    async def get_user_by_id(self, id: str) -> UserInfo | None:
         try:
-            return await UserInfo.get(user_id)
+            return await UserInfo.get(id)
         except NotFoundError:
             return None
 
-    async def get_user_by_name(self, aas: str) -> UserInfo | None:
+    async def get_user_by_name(self, name: str) -> UserInfo | None:
         await self._migrate()
-        found = UserInfo.find(UserInfo.user_name == aas)
+        found = UserInfo.find(UserInfo.user_name == name)
         try:
             return await found.first()  # type: ignore
         except NotFoundError:
