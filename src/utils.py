@@ -49,17 +49,18 @@ class Counter:
             return resp
         return wrapper
 
-def load_from_path(path: str | PathLike | T, extend: Type[T] = Type[Any]) -> str | T:
+
+def load_from_path(path: str | PathLike | T, extend: Type[T | None] = type(None)) -> str | T:
     if not isinstance(path, (str, PathLike, extend)):
         raise TypeError(f"Invalid type for path: {type(path)}. Expected str, PathLike, or {extend.__name__}.")
 
-    if isinstance(path, extend):
+    if extend is not None and isinstance(path, extend):
         return path
     with open(path, "r", encoding="utf-8") as f:
         return f.read()
 
 
-def load_from_json_path(path: str | PathLike | T, extend: Type[T] = Type[Any]) -> dict | T:
+def load_from_json_path(path: str | PathLike | T, extend: Type[T | None] = type(None)) -> dict | T:
     if isinstance(path, extend):
         return path
     return json.loads(load_from_path(path))
