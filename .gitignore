@@ -1,12 +1,16 @@
+# venv
 env/
-__pycache__
 
-*.env
+# cache
+__pycache__
 .pytest_cache
+
+# private
+*.env
 !sample.env
 data/users.pickle
-
-!.vscode/settings.json
-.vscode/
-
 ngWords.txt
+
+# vscode
+.vscode/
+!.vscode/settings.json
