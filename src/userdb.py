@@ -26,6 +26,9 @@ class UserDB:
         self._db_url = redis_url
         UserInfo.Meta.database = get_redis_connection(url=self._db_url)  # type: ignore
 
+    async def ping(self):
+        return await UserInfo.db().ping()
+
     async def get_all_users(self) -> list[UserInfo]:
         all_pks = await UserInfo.all_pks()
         return await asyncio.gather(*[UserInfo.get(i) async for i in all_pks])

@@ -111,6 +111,10 @@ class Bot:
             "body": {"channel": "hybridTimeline", "id": "1"},
         }
 
+        pong = await self.db.ping()
+        if not pong:
+            raise Exception("DB connection failed.")
+
         while True:
             async with websockets.connect(streaming_api, user_agent_header=USER_AGENT) as ws:
                 # self.on_open(ws)
