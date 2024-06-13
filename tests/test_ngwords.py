@@ -1,4 +1,4 @@
-from src import ngwords
+import ngwords
 
 
 ng = {"r-18", "荒らす", "twitter", "ワード"}
