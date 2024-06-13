@@ -39,7 +39,7 @@ class Counter:
         self.do = do
 
     def __call__(self, f) -> Any:
-        def wrapper(*args: f.args, **kwargs):
+        def wrapper(*args, **kwargs):
             self._now += 1
             if self._now == self.count:
                 self._now = 0
