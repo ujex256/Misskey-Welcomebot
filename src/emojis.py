@@ -21,7 +21,7 @@ class EmojiSet:
                 "response.jsonは{'triggers': [], 'others': []}の形にしてください。"
             )
 
-        if any([sorted(i.keys()) != ("emoji", "keywords") for i in json["triggers"]]):
+        if any([sorted(i.keys()) != ["emoji", "keywords"] for i in json["triggers"]]):
             raise ConfigJsonError(
                 "response.jsonのトリガーのキーはkeywordsとemojiにしてください。"
             )
