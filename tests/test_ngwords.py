@@ -1,6 +1,5 @@
 import ngwords
 
-
 ng = {"r-18", "荒らす", "twitter", "ワード"}
 allow = {"除外ワード", "除外ワード2"}
 
