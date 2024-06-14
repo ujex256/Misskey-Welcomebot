@@ -24,7 +24,7 @@ class Settings(DotenvSettings):
     server_port: int = 8000
 
     @model_validator(mode="after")
-    def required_when_redis(self):
+    def validate_environ(self):
         if self.db_url is None and self.db_type == "redis":
             raise ValueError("DB_URL is required when DB_TYPE is redis")
 
