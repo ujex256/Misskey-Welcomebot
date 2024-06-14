@@ -12,5 +12,5 @@ data/users.pickle
 ngWords.txt
 
 # vscode
-.vscode/
+.vscode/*
 !.vscode/settings.json
