@@ -7,10 +7,11 @@ __pycache__
 
 # private
 *.env
-!sample.env
 data/users.pickle
 ngWords.txt
 
 # vscode
 .vscode/*
 !.vscode/settings.json
+
+*.rdb
