@@ -1,8 +1,6 @@
 import json
-import sys
 
-sys.path.append("./src")
-from src import misskey_api as misskey  # NOQA
+import misskey_api as misskey  # NOQA
 
 
 def test_can_renote():

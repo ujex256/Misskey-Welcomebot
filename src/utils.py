@@ -1,10 +1,11 @@
 import time
-import os
-import pickle
-from typing import Any
-from collections import deque
+from typing import Any, TypeVar, Type
 
-import dotenv
+import json
+from os import PathLike
+
+
+T = TypeVar("T")
 
 
 class RateLimiter:
@@ -49,48 +50,17 @@ class Counter:
         return wrapper
 
 
-def config_dir():
-    dotenv.load_dotenv()
-    dir = os.getenv("CONFIG_DIR", "./config")
-    if not os.path.exists(dir):
-        raise FileNotFoundError("Config directory not found.")
-    return dir
+def load_from_path(path: str | PathLike | T, extend: Type[T | None] = type(None)) -> str | T:
+    if not isinstance(path, (str, PathLike, extend)):
+        raise TypeError(f"Invalid type for path: {type(path)}. Expected str, PathLike, or {extend.__name__}.")
+
+    if extend is not None and isinstance(path, extend):
+        return path
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
 
 
-def db_type():
-    dotenv.load_dotenv()
-    return os.getenv("DB_TYPE")
-
-
-def update_db(key: str, value, allow_duplicates: bool = True) -> None:
-    if not allow_duplicates:
-        value = set(value)
-
-    if db_type() == "redis":
-        import redis
-        dotenv.load_dotenv()
-
-        r = redis.from_url(os.getenv("DB_URL"))
-        p = r.pipeline()
-        for i in value:
-            p.sadd("have_note_user_ids", i)
-        p.execute()
-    elif db_type() == "pickle":
-        with open("./data/users.pickle", "wb") as f:
-            pickle.dump(deque(value), f)
-
-
-def get_db():
-    if db_type() == "redis":
-        import redis
-        dotenv.load_dotenv()
-
-        r = redis.from_url(os.getenv("DB_URL"))
-        return deque(map(lambda x: x.decode(), r.smembers("have_note_user_ids")))
-    elif db_type() == "pickle":
-        try:
-            with open('./data/users.pickle', "rb") as f:
-                have_note_user_ids = pickle.load(f)
-        except FileNotFoundError:
-            have_note_user_ids = deque()
-        return have_note_user_ids
+def load_from_json_path(path: str | PathLike | T, extend: Type[T | None] = type(None)) -> dict | T:
+    if isinstance(path, extend):
+        return path
+    return json.loads(load_from_path(path))

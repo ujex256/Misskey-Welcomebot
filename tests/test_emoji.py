@@ -1,20 +1,18 @@
 import pytest
 
-from src import emojis
+import emojis
+
+inputs = [
+    ["aaa", "[Errno 2] No such file or directory: 'aaa'", FileNotFoundError],
+    [[], "Invalid type for path: <class 'list'>. Expected str, PathLike, or NoneType.", TypeError],
+    [{"a": "b"}, "response.jsonは{'triggers': [], 'others': []}の形にしてください。", emojis.ConfigJsonError],
+    [{"triggers": [{}], "others": []}, "response.jsonのトリガーのキーはkeywordsとemojiにしてください。", emojis.ConfigJsonError]
+]
 
 
-messages = ["response.jsonは{'triggers': [], 'others': []}の形にしてください。",
-            "response.jsonのトリガーのキーはkeywordsとemojiにしてください。",
-            "[Errno 2] No such file or directory: 'aaaaaaaa'"]
-
-
-@pytest.mark.parametrize("input,msg",
-                         (["aaaaaaaa", messages[2]],
-                          [[], messages[0]],
-                          [{"d": "a"}, messages[0]],
-                          [{"triggers": [{}], "others": []}, messages[1]]))
-def test_emojiset_error(input, msg):
-    error_cls = FileNotFoundError if isinstance(input, str) else emojis.ConfigJsonError
-    with pytest.raises(error_cls) as e:
+@pytest.mark.parametrize("input,msg,exception", inputs)
+def test_emojiset_error(input, msg, exception):
+    with pytest.raises(exception) as e:
         emojis.EmojiSet(input)
+    print(msg)
     assert str(e.value) == msg

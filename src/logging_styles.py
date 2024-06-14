@@ -19,10 +19,17 @@ DEFAULT_LEVEL_STYLES = {
     "critical": {"color": "red"},
 }
 
+formatter = coloredlogs.ColoredFormatter(
+    fmt=DEFAULT_LOG_FORMAT,
+    datefmt=DEFAULT_DATE_FORMAT,
+    field_styles=DEFAULT_FIELD_STYLES,
+    level_styles=DEFAULT_LEVEL_STYLES,
+)
 
-def set_default():
-    coloredlogs.DEFAULT_LOG_LEVEL = DEFAULT_LOG_LEVEL
-    coloredlogs.DEFAULT_LOG_FORMAT = DEFAULT_LOG_FORMAT
-    coloredlogs.DEFAULT_DATE_FORMAT = DEFAULT_DATE_FORMAT
-    coloredlogs.DEFAULT_FIELD_STYLES = DEFAULT_FIELD_STYLES
-    coloredlogs.DEFAULT_LEVEL_STYLES = DEFAULT_LEVEL_STYLES
+
+def getLogger(name: str) -> logging.Logger:
+    logger = logging.getLogger(name)
+    logger.setLevel(DEFAULT_LOG_LEVEL)
+    logger.addHandler(logging.StreamHandler())
+    logger.handlers[0].setFormatter(formatter)
+    return logger
