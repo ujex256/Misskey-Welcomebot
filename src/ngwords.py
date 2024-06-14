@@ -54,8 +54,3 @@ class NGWords:
     @property
     def all_excluded_words(self) -> set:
         return self._allow
-
-
-if __name__ == "__main__":
-    print(NGWords(r"ng_words/ngWords.txt").match("r-18"))
-    print(NGWords(r"ngWords_Hiraassssssss.txt").all_ng_words)  # FileNotFound
