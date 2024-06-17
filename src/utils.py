@@ -1,7 +1,6 @@
 import time
-from typing import Any, TypeVar, Type
-
 import json
+from typing import Any, TypeVar, Type, Callable
 from os import PathLike
 
 
@@ -10,7 +9,8 @@ T = TypeVar("T")
 
 class RateLimiter:
     def __init__(self, per_second: int):
-        """レートリミット
+        """
+        レートリミットのクラス
 
         Args:
             per_second (int): 1回の間隔
@@ -33,7 +33,14 @@ class RateLimiter:
 
 
 class Counter:
-    def __init__(self, counter, do) -> None:
+    def __init__(self, counter: int, do: Callable) -> None:
+        """
+        指定の回数呼び出されたときに任意の関数を実行するデコレーター
+
+        Args:
+            counter (int): 何回で実行するか
+            do (Callable): 実行される関数
+        """
         self.count = counter
         self._now = 0
         self.do = do
