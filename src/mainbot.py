@@ -125,7 +125,6 @@ class Bot:
                 self.logger.warn("API timeouted. | endpoint: Unknown")
             case _:
                 self.logger.error(str(error))
-        raise error
 
     async def on_close(self, ws, status_code, msg) -> bool:
         self.logger.error(f"WebSocket closed. | code:{status_code} msg: {msg}")
