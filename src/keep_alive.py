@@ -29,7 +29,8 @@ if __name__ == "__main__":
         logger.info("Web server started!")
 
     async def main():
-        async with aiohttp.ClientSession() as session:
+        timeout = aiohttp.ClientTimeout(total=5)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
             await mainbot.Bot(config, session).start_bot()
 
     asyncio.run(main())
