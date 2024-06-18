@@ -1,8 +1,9 @@
 import asyncio
 import json
-from threading import Thread
 
 import websockets
+from aiohttp import ClientSession
+from misskey.asynchronous import AsyncMisskey
 
 import utils
 import logging_styles
@@ -16,7 +17,7 @@ from emojis import EmojiSet
 class Bot:
     counter = utils.Counter(100, lambda: None)
 
-    def __init__(self, settings: Settings, restart: bool = True) -> None:
+    def __init__(self, settings: Settings, aiosession: ClientSession, restart: bool = True) -> None:
         self.logger = logging_styles.getLogger(__name__)
         self.config = settings
         self._restart = restart
@@ -28,10 +29,16 @@ class Bot:
         self.logger.info("Loading ngwords.txt...")
         self.ngw = NGWords(str(self.config_dir.joinpath("ngwords.txt")))
 
+        self._api_session = aiosession
+        self.api = AsyncMisskey(
+            address=self.config.host,
+            token=self.config.secret_token,
+            session=self._api_session
+        )
         self.db = UserDB(str(self.config.db_url))  # TODO: redis以外への対応
 
     # TODO: なんか良い名前に変えたい
-    def send_welcome(self, note_id: str, note_text: str) -> None:
+    async def send_welcome(self, note_id: str, note_text: str) -> None:
         """Send welcome message.
 
         Args:
@@ -39,8 +46,13 @@ class Bot:
             note_text (str): misskey note text
         """
         reaction = self.emojis.get_response_emoji(note_text)
-        Thread(target=misskey.add_reaction, args=(note_id, reaction)).start()
-        Thread(target=misskey.renote, args=(note_id,)).start()
+        # Thread(target=misskey.add_reaction, args=(note_id, reaction)).start()
+        # Thread(target=misskey.renote, args=(note_id,)).start()
+        await self.api._api_request(
+            endpoint="/api/notes/reactions/create",
+            params={"noteId": note_id, "reaction": reaction}
+        )
+        await self.api.notes_create(renote_id=note_id, local_only=True)
 
     @counter
     def need(self) -> bool:
@@ -68,7 +80,8 @@ class Bot:
                                word: {self.ngw.why(note_text)}"
             )
         elif misskey.can_reply(note_body):
-            Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
+            # Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
+            await self.api.notes_create(text="Pong!", reply_id=note_id, local_only=True)
         elif not misskey.can_renote(note_body):
             pass
         elif await self.db.get_user_by_id(user_id):
@@ -82,14 +95,20 @@ class Bot:
         self.logger.debug(
             f"Notes not registered in database. | body: {note_text} , id: {note_id}"
         )
-        user_info = misskey.get_user_info(user_id=user_id)
+        user_info = await self.api._api_request(endpoint="/api/users/show", params={"userId": user_id})
 
         if (notes_count := user_info["notesCount"]) == 1:
-            self.send_welcome(note_id, note_text)
+            await self.send_welcome(note_id, note_text)
         elif notes_count <= 10:  # ノート数が10以下ならRenote出来る可能性
-            notes = misskey.get_user_notes(user_id, note_id, 10)
+            # notes = misskey.get_user_notes(user_id, note_id, 10)
+            body = {
+                "userId": user_id,
+                "untilId": note_id,
+                "limit": 10,
+            }
+            notes = await self.api._api_request(endpoint="/api/users/notes", params=body)
             if all([not misskey.can_renote(note) for note in notes]):
-                self.send_welcome(note_id, note_text)
+                await self.send_welcome(note_id, note_text)
                 return None
 
         if notes_count > 5:
@@ -98,6 +117,7 @@ class Bot:
 
     async def on_error(self, ws, error) -> None:
         self.logger.warning(str(error))
+        raise error
 
     async def on_close(self, ws, status_code, msg) -> bool:
         self.logger.error(f"WebSocket closed. | code:{status_code} msg: {msg}")
