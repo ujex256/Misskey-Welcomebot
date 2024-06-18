@@ -106,7 +106,11 @@ class Bot:
                 "untilId": note_id,
                 "limit": 10,
             }
-            notes = await self.api._api_request(endpoint="/api/users/notes", params=body)
+            try:
+                notes = await self.api._api_request(endpoint="/api/users/notes", params=body)
+            except asyncio.TimeoutError:
+                self.logger.warn("API timeouted. | endpoint: /api/users/notes")
+                return None
             if all([not misskey.can_renote(note) for note in notes]):
                 await self.send_welcome(note_id, note_text)
                 return None
@@ -117,6 +121,8 @@ class Bot:
 
     async def on_error(self, ws, error) -> None:
         self.logger.warning(str(error))
+        if isinstance(error, asyncio.TimeoutError):
+            self.logger.warn("API timeouted. | endpoint: Unknown")
         raise error
 
     async def on_close(self, ws, status_code, msg) -> bool:
