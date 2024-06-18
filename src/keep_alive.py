@@ -1,6 +1,7 @@
 import asyncio
 from multiprocessing import Process
 
+import aiohttp
 from flask import Flask, jsonify
 
 import environs
@@ -26,4 +27,9 @@ if __name__ == "__main__":
     if config.run_server:
         Process(target=run_server, args=(str(config.server_host), config.server_port)).start()
         logger.info("Web server started!")
-    asyncio.run(mainbot.Bot(config).start_bot())
+
+    async def main():
+        async with aiohttp.ClientSession() as session:
+            await mainbot.Bot(config, session).start_bot()
+
+    asyncio.run(main())
