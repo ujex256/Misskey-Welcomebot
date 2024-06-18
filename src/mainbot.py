@@ -120,7 +120,7 @@ class Bot:
             self.logger.info("DataBase Updated.")
 
     async def on_error(self, ws, error) -> None:
-        self.logger.warning(str(error))
+        self.logger.error(str(error))
         if isinstance(error, asyncio.TimeoutError):
             self.logger.warn("API timeouted. | endpoint: Unknown")
         raise error
