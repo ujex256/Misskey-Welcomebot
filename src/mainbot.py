@@ -108,7 +108,7 @@ class Bot:
             except asyncio.TimeoutError:
                 self.logger.warn("API timeouted. | endpoint: /api/users/notes")
                 return None
-            if all([not misskey.can_renote(note) for note in notes]):
+            if not any([misskey.can_renote(note) for note in notes]):
                 await self.send_welcome(note_id, note_text)
                 return None
 
