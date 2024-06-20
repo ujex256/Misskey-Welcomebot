@@ -39,17 +39,14 @@ class Bot:
         )
         self.db = UserDB(str(self.config.db_url))  # TODO: redis以外への対応
 
-    # TODO: なんか良い名前に変えたい
     async def send_welcome(self, note_id: str, note_text: str) -> None:
         """Send welcome message.
 
         Args:
-            note_id (str): misskey note id
-            note_text (str): misskey note text
+            note_id (str): note id
+            note_text (str): note text
         """
         reaction = self.emojis.get_response_emoji(note_text)
-        # Thread(target=misskey.add_reaction, args=(note_id, reaction)).start()
-        # Thread(target=misskey.renote, args=(note_id,)).start()
         await self.api._api_request(
             endpoint="/api/notes/reactions/create",
             params={"noteId": note_id, "reaction": reaction}
@@ -82,7 +79,6 @@ class Bot:
                                word: {self.ngw.why(note_text)}"
             )
         elif misskey.can_reply(note_body):
-            # Thread(target=misskey.reply, args=(note_id, "Pong!")).start()
             await self.api.notes_create(text="Pong!", reply_id=note_id, local_only=True)
         elif not misskey.can_renote(note_body):
             pass
@@ -102,7 +98,6 @@ class Bot:
         if (notes_count := user_info["notesCount"]) == 1:
             await self.send_welcome(note_id, note_text)
         elif notes_count <= 10:  # ノート数が10以下ならRenote出来る可能性
-            # notes = misskey.get_user_notes(user_id, note_id, 10)
             body = {
                 "userId": user_id,
                 "untilId": note_id,
@@ -126,7 +121,7 @@ class Bot:
             raise error
         except asyncio.TimeoutError:
             self.logger.warn("API timeouted. | endpoint: Unknown")
-        except ValidationError:
+        except ValidationError:  # 仮: Misskey.py5.0.0a1
             pass
         except Exception:
             msg = traceback.format_exc()
