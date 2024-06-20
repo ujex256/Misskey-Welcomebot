@@ -114,7 +114,6 @@ class Bot:
 
         if notes_count > 5:
             await self.db.add_user(user_id, note_body["user"]["username"])
-            self.logger.info("DataBase Updated.")
 
     async def on_error(self, ws, error) -> None:
         try:
