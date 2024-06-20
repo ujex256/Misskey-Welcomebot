@@ -24,12 +24,12 @@ class Bot:
         self.config = settings
         self._restart = restart
 
-        self.config_dir = self.config.config_dir
+        conf = self.config.config_dir
 
         self.logger.info("Loading response.json...")
-        self.emojis = EmojiSet(str(self.config_dir.joinpath("response.json")))
+        self.emojis = EmojiSet(str(conf.joinpath("response.json")))
         self.logger.info("Loading ngwords.txt...")
-        self.ngw = NGWords(str(self.config_dir.joinpath("ngwords.txt")))
+        self.ngw = NGWords(str(conf.joinpath("ngwords.txt")))
 
         self._api_session = aiosession
         self.api = AsyncMisskey(
