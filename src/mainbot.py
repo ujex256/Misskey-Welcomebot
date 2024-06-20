@@ -1,9 +1,11 @@
 import asyncio
 import json
+import traceback
 
 import websockets
 from aiohttp import ClientSession
 from misskey.asynchronous import AsyncMisskey
+from marshmallow.exceptions import ValidationError
 
 import utils
 import logging_styles
@@ -120,11 +122,15 @@ class Bot:
             self.logger.info("DataBase Updated.")
 
     async def on_error(self, ws, error) -> None:
-        match error:
-            case asyncio.TimeoutError:
-                self.logger.warn("API timeouted. | endpoint: Unknown")
-            case _:
-                self.logger.error(str(error))
+        try:
+            raise error
+        except asyncio.TimeoutError:
+            self.logger.warn("API timeouted. | endpoint: Unknown")
+        except ValidationError:
+            pass
+        except Exception:
+            msg = traceback.format_exc()
+            self.logger.error(msg)
 
     async def on_close(self, ws, status_code, msg) -> bool:
         self.logger.error(f"WebSocket closed. | code:{status_code} msg: {msg}")
