@@ -132,7 +132,7 @@ class Bot:
 
     async def start_bot(self):
         streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
-        USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"  # NOQA
+        USER_AGENT = "Misskey-Welcomebot (repo: https://github.com/ujex256/Misskey-Welcomebot)"  # NOQA
         CONNECTMSG = {
             "type": "connect",
             "body": {"channel": "hybridTimeline", "id": "1"},
