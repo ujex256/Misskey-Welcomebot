@@ -131,7 +131,7 @@ class Bot:
         return self._restart
 
     async def start_bot(self):
-        streaming_api = f"wss://{misskey.HOST}/streaming?i={misskey.TOKEN}"
+        streaming_api = f"wss://{self.config.host}/streaming?i={self.config.secret_token}"
         USER_AGENT = "Misskey-Welcomebot (repo: https://github.com/ujex256/Misskey-Welcomebot)"  # NOQA
         CONNECTMSG = {
             "type": "connect",
