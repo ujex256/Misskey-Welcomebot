@@ -91,7 +91,7 @@ class Bot:
             return None
 
         self.logger.debug(
-            f"Notes not registered in database. | body: {note_text} , id: {note_id}"
+            f"Notes not registered in database. | userId: {user_id} , noteId: {note_id}"
         )
         user_info = await self.api._api_request(endpoint="/api/users/show", params={"userId": user_id})
 
