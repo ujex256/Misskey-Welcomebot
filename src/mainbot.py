@@ -52,6 +52,7 @@ class Bot:
             params={"noteId": note_id, "reaction": reaction}
         )
         await self.api.notes_create(renote_id=note_id, local_only=True)
+        self.logger.info(f"Sent welcome message | id: {note_id}, reaction: {reaction}")
 
     @counter
     def need(self) -> bool:
