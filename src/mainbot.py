@@ -94,7 +94,10 @@ class Bot:
         self.logger.debug(
             f"Notes not registered in database. | userId: {user_id} , noteId: {note_id}"
         )
-        user_info = await self.api._api_request(endpoint="/api/users/show", params={"userId": user_id})
+        user_info = await self.api._api_request(
+            endpoint="/api/users/show",
+            params={"userId": user_id}
+        )
 
         if (notes_count := user_info["notesCount"]) == 1:
             await self.send_welcome(note_id, note_text)
