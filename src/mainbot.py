@@ -70,7 +70,7 @@ class Bot:
 
         if self.need():  # 100回受信したならメッセージを送信
             self.logger.info("Sended message to avoid Websocket disconnection")
-            ws.send("this is dummy message")
+            await ws.send("this is dummy message")
 
         # Renote不可ならreturn
         return_flg = True
