@@ -110,7 +110,7 @@ class Bot:
             try:
                 notes = await self.api._api_request(endpoint="/api/users/notes", params=body)
             except asyncio.TimeoutError:
-                self.logger.warn("API timeouted. | endpoint: /api/users/notes")
+                self.logger.warn("API timed out. | endpoint: /api/users/notes")
                 return None
             if not any([misskey.can_renote(note) for note in notes]):
                 await self.send_welcome(note_id, note_text)
@@ -123,7 +123,7 @@ class Bot:
         try:
             raise error
         except asyncio.TimeoutError:
-            self.logger.warn("API timeouted. | endpoint: Unknown")
+            self.logger.warn("API timed out. | endpoint: Unknown")
         except ValidationError:  # 仮: Misskey.py5.0.0a1
             pass
         except Exception:
