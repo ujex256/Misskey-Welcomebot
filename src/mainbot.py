@@ -19,7 +19,12 @@ from emojis import EmojiSet
 class Bot:
     counter = utils.Counter(100, lambda: None)
 
-    def __init__(self, settings: Settings, aiosession: ClientSession, restart: bool = True) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        aiosession: ClientSession,
+        restart: bool = True
+    ) -> None:
         self.logger = logging_styles.getLogger(__name__)
         self.config = settings
         self._restart = restart
