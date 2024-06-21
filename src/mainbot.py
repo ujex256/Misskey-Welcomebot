@@ -84,7 +84,7 @@ class Bot:
         elif not misskey.can_renote(note_body):
             pass
         elif await self.db.get_user_by_id(user_id):
-            self.logger.debug("Skiped api request because it was registered in DB.")
+            self.logger.debug("Skipped api request because it was registered in DB.")
         else:
             return_flg = False
 
