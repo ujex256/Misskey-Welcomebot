@@ -46,6 +46,7 @@ class Bot:
         self.db = UserDB(str(self.config.db_url))  # TODO: redis以外への対応
         self.limiter = Limiter(3)
         self.limiter2 = Limiter(3)
+        self.me = ""
 
     async def send_welcome(self, note_id: str, note_text: str) -> None:
         """Send welcome message.
@@ -87,7 +88,7 @@ class Bot:
                 f"Detected NG word. | noteId: {note_id}, \
                                word: {self.ngw.why(note_text)}"
             )
-        elif misskey.can_reply(note_body):
+        elif misskey.can_reply(note_body, self.me):
             await self.api.notes_create(text="Pong!", reply_id=note_id, local_only=True)
         elif not misskey.can_renote(note_body):
             pass
@@ -145,6 +146,10 @@ class Bot:
         return self._restart
 
     async def start_bot(self):
+        me = await self.api.i()
+        self.me = me.username
+        self.logger.info(f"User name: {self.me}")
+
         streaming_api = f"wss://{self.config.host}/streaming?i={self.config.secret_token}"
         USER_AGENT = "Misskey-Welcomebot (repo: https://github.com/ujex256/Misskey-Welcomebot)"  # NOQA
         CONNECTMSG = {
