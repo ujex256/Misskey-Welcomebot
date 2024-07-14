@@ -85,8 +85,8 @@ class Bot:
         return_flg = True
         if self.ngw.match(note_text):
             self.logger.info(
-                f"Detected NG word. | noteId: {note_id}, \
-                               word: {self.ngw.why(note_text)}"
+                f"Detected NG word. | noteId: {note_id}, "
+                f"word: {self.ngw.why(note_text)}"
             )
         elif misskey.can_reply(note_body, self.me):
             await self.api.notes_create(text="Pong!", reply_id=note_id, local_only=True)
