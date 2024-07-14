@@ -4,6 +4,7 @@ import traceback
 
 import websockets
 from aiohttp import ClientSession
+from asynciolimiter import Limiter
 from misskey.asynchronous import AsyncMisskey
 from marshmallow.exceptions import ValidationError
 
@@ -43,6 +44,8 @@ class Bot:
             session=self._api_session
         )
         self.db = UserDB(str(self.config.db_url))  # TODO: redis以外への対応
+        self.limiter = Limiter(3)
+        self.limiter2 = Limiter(3)
 
     async def send_welcome(self, note_id: str, note_text: str) -> None:
         """Send welcome message.
@@ -99,6 +102,7 @@ class Bot:
         self.logger.debug(
             f"Notes not registered in database. | userId: {user_id} , noteId: {note_id}"
         )
+        await self.limiter.wait()
         user_info = await self.api._api_request(
             endpoint="/api/users/show",
             params={"userId": user_id}
@@ -113,6 +117,7 @@ class Bot:
                 "limit": 10,
             }
             try:
+                await self.limiter2.wait()
                 notes = await self.api._api_request(endpoint="/api/users/notes", params=body)
             except asyncio.TimeoutError:
                 self.logger.warn("API timed out. | endpoint: /api/users/notes")
