@@ -169,7 +169,8 @@ class Bot:
                 while True:
                     try:
                         msg = await ws.recv()
-                        await self.on_message(ws, str(msg))
+                        tsk = asyncio.create_task(self.on_message(ws, str(msg)))
+                        await tsk
                     except websockets.ConnectionClosed:
                         await self.on_close(ws, ws.close_code, ws.close_reason)
                         if not self._restart:
