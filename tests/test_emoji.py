@@ -26,5 +26,4 @@ inputs = [
 def test_emojiset_error(input, msg, exception):
     with pytest.raises(exception) as e:
         emojis.EmojiSet(input)
-    print(msg)
     assert str(e.value) == msg
