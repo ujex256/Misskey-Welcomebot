@@ -24,7 +24,7 @@ class Bot:
         self,
         settings: Settings,
         aiosession: ClientSession,
-        restart: bool = True
+        restart: bool = True,
     ) -> None:
         self.logger = logging_styles.getLogger(__name__)
         self.config = settings
@@ -41,7 +41,7 @@ class Bot:
         self.api = AsyncMisskey(
             address=self.config.host,
             token=self.config.secret_token,
-            session=self._api_session
+            session=self._api_session,
         )
         self.db = UserDB(str(self.config.db_url))  # TODO: redis以外への対応
         self.limiter = Limiter(3)
@@ -58,7 +58,7 @@ class Bot:
         reaction = self.emojis.get_response_emoji(note_text)
         await self.api._api_request(
             endpoint="/api/notes/reactions/create",
-            params={"noteId": note_id, "reaction": reaction}
+            params={"noteId": note_id, "reaction": reaction},
         )
         await self.api.notes_create(renote_id=note_id, local_only=True)
         self.logger.info(f"Sent welcome message | id: {note_id}, reaction: {reaction}")
@@ -105,8 +105,7 @@ class Bot:
         )
         await self.limiter.wait()
         user_info = await self.api._api_request(
-            endpoint="/api/users/show",
-            params={"userId": user_id}
+            endpoint="/api/users/show", params={"userId": user_id}
         )
 
         if (notes_count := user_info["notesCount"]) == 1:
@@ -119,7 +118,9 @@ class Bot:
             }
             try:
                 await self.limiter2.wait()
-                notes = await self.api._api_request(endpoint="/api/users/notes", params=body)
+                notes = await self.api._api_request(
+                    endpoint="/api/users/notes", params=body
+                )
             except asyncio.TimeoutError:
                 self.logger.warn("API timed out. | endpoint: /api/users/notes")
                 return None
@@ -162,7 +163,7 @@ class Bot:
             raise Exception("DB connection failed.")
 
         while True:
-            async with websockets.connect(streaming_api, user_agent_header=USER_AGENT) as ws:
+            async with websockets.connect(streaming_api, user_agent_header=USER_AGENT) as ws:  # fmt: skip
                 # self.on_open(ws)
                 self.logger.info("Bot was started!")
                 await ws.send(json.dumps(CONNECTMSG))
