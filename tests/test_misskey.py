@@ -11,8 +11,8 @@ def test_can_renote():
 
 
 def test_can_reply():
-    misskey.USERNAME = "youkoso_bot"
+    username = "youkoso_bot"
     with open("tests/test_note_reply.json") as f:
         j = json.load(f)
     for i in j:
-        assert misskey.can_reply(i) == i["r"]
+        assert misskey.can_reply(i, username) == i["r"]
