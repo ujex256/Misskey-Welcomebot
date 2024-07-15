@@ -101,7 +101,7 @@ class Bot:
             return None
 
         self.logger.debug(
-            f"Notes not registered in database. | userId: {user_id} , noteId: {note_id}"
+            f"Notes not registered in database. | userId: {user_id}, noteId: {note_id}"
         )
         await self.limiter.wait()
         user_info = await self.api._api_request(
