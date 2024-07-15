@@ -56,13 +56,3 @@ class UserDB:
 
     async def _migrate(self) -> None:
         await Migrator().run()
-
-
-if __name__ == "__main__":
-    import asyncio, environs
-
-    db_url = environs.Settings().db_url
-    if db_url is None:
-        exit(print("db_type is not redis"))
-    db = UserDB(str(db_url))
-    print(asyncio.run(db.get_user_by_name("ffdi")))
