@@ -24,6 +24,7 @@ class RateLimiter:
             response = func(*args, **kwargs)
             self.last_called_time = time.time()
             return response
+
         return wrapper
 
     def wait(self):
@@ -54,12 +55,18 @@ class Counter:
 
             resp = f(*args, **kwargs)
             return resp
+
         return wrapper
 
 
-def load_from_path(path: str | PathLike | T, extend: Type[T | None] = type(None)) -> str | T:
+def load_from_path(
+    path: str | PathLike | T,
+    extend: Type[T | None] = type(None),
+) -> str | T:
     if not isinstance(path, (str, PathLike, extend)):
-        raise TypeError(f"Invalid type for path: {type(path)}. Expected str, PathLike, or {extend.__name__}.")
+        raise TypeError(
+            f"Invalid type for path: {type(path)}. Expected str, PathLike, or {extend.__name__}."
+        )
 
     if extend is not None and isinstance(path, extend):
         return path
@@ -67,7 +74,10 @@ def load_from_path(path: str | PathLike | T, extend: Type[T | None] = type(None)
         return f.read()
 
 
-def load_from_json_path(path: str | PathLike | T, extend: Type[T | None] = type(None)) -> dict | T:
+def load_from_json_path(
+    path: str | PathLike | T,
+    extend: Type[T | None] = type(None),
+) -> dict | T:
     if isinstance(path, extend):
         return path
     return json.loads(load_from_path(path))

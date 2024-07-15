@@ -51,7 +51,7 @@ class UserDB:
         await UserInfo(
             user_id=user_id,
             user_name=username,
-            last_received_date=datetime.now()
+            last_received_date=datetime.now(),
         ).save()
 
     async def _migrate(self) -> None:

@@ -25,7 +25,10 @@ def run_server(host: str, port: int):
 if __name__ == "__main__":
     config = environs.Settings()
     if config.run_server:
-        Process(target=run_server, args=(str(config.server_host), config.server_port)).start()
+        Process(
+            target=run_server,
+            args=(str(config.server_host), config.server_port),
+        ).start()
         logger.info("Web server started!")
 
     async def main():
