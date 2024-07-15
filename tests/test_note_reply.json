@@ -10,7 +10,7 @@
         "r": false
     },
     {
-        "text": "@youkoso_bot /ping abdefgaaaaaaaa",
+        "text": "@youkoso_bot /ping abcdefg",
         "visibility": "specified",
         "r": true
     },
@@ -20,7 +20,7 @@
         "r": true
     },
     {
-        "text": "@youkoso_bot /ping abdefg",
+        "text": "@youkoso_bot /ping abcdefg",
         "visibility": "public",
         "r": true
     },
