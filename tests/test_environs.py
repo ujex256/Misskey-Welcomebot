@@ -37,3 +37,22 @@ def test_redis_db(url: str | None, exp: Type[Exception] | None):
             Settings(**kwargs)
     else:
         Settings(**kwargs)
+
+
+@pytest.mark.parametrize(
+    "ip, raise_exp",
+    [
+        ["", True],
+        ["0.0.0.0", False],
+        ["223.255.255.255", False],
+        ["223.255.255.256", True]
+    ]
+)
+def test_server_host(ip: str, raise_exp: bool):
+    kwargs = default_kwargs.copy()
+    kwargs["server_host"] = ip
+    if raise_exp:
+        with pytest.raises(ValidationError):
+            Settings(**kwargs)
+    else:
+        Settings(**kwargs)
