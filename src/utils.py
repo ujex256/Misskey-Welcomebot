@@ -1,36 +1,8 @@
-import time
 import json
-from typing import Any, TypeVar, Type, Callable
 from os import PathLike
-
+from typing import Any, Callable, Type, TypeVar
 
 T = TypeVar("T")
-
-
-class RateLimiter:
-    def __init__(self, per_second: int):
-        """
-        レートリミットのクラス
-
-        Args:
-            per_second (int): 1回の間隔
-        """
-        self.per_second = per_second  # リクエスト送信の間隔（秒）
-        self.last_called_time = time.time()
-
-    def __call__(self, func):
-        def wrapper(*args, **kwargs):
-            self.wait()
-            response = func(*args, **kwargs)
-            self.last_called_time = time.time()
-            return response
-
-        return wrapper
-
-    def wait(self):
-        elapsed_time = time.time() - self.last_called_time
-        if elapsed_time < self.per_second:
-            time.sleep(self.per_second - elapsed_time)
 
 
 class Counter:
