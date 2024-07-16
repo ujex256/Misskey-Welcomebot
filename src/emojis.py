@@ -9,7 +9,16 @@ class ConfigJsonError(Exception):
 
 class EmojiSet:
     def __init__(self, data: str | dict) -> None:
-        loaded = load_from_json_path(data, dict)
+        """
+        レスポンスの絵文字を返すクラス
+
+        Args:
+            data (str | dict): response.jsonのパス
+        """
+        if isinstance(data, dict):
+            loaded = data
+        else:
+            loaded = load_from_json_path(data)
         self._check_format(loaded)
 
         self.response_emojis = loaded["triggers"]

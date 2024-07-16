@@ -1,42 +1,22 @@
-import time
-from typing import Any, TypeVar, Type
-
 import json
 from os import PathLike
-
+from typing import Any, Callable, Type, TypeVar
 
 T = TypeVar("T")
 
 
-class RateLimiter:
-    def __init__(self, per_second: int):
-        """レートリミット
+class Counter:
+    def __init__(self, count: int, do: Callable) -> None:
+        """
+        指定の回数呼び出されたときに任意の関数を実行するデコレーター
 
         Args:
-            per_second (int): 1回の間隔
+            counter (int): 何回で実行するか
+            do (Callable): 実行される関数
         """
-        self.per_second = per_second  # リクエスト送信の間隔（秒）
-        self.last_called_time = time.time()
-
-    def __call__(self, func):
-        def wrapper(*args, **kwargs):
-            self.wait()
-            response = func(*args, **kwargs)
-            self.last_called_time = time.time()
-            return response
-        return wrapper
-
-    def wait(self):
-        elapsed_time = time.time() - self.last_called_time
-        if elapsed_time < self.per_second:
-            time.sleep(self.per_second - elapsed_time)
-
-
-class Counter:
-    def __init__(self, counter, do) -> None:
-        self.count = counter
-        self._now = 0
+        self.count = count
         self.do = do
+        self._now = 0
 
     def __call__(self, f) -> Any:
         def wrapper(*args, **kwargs):
@@ -47,12 +27,18 @@ class Counter:
 
             resp = f(*args, **kwargs)
             return resp
+
         return wrapper
 
 
-def load_from_path(path: str | PathLike | T, extend: Type[T | None] = type(None)) -> str | T:
+def load_from_path(
+    path: str | PathLike | T,
+    extend: Type[T | None] = type(None),
+) -> str | T:
     if not isinstance(path, (str, PathLike, extend)):
-        raise TypeError(f"Invalid type for path: {type(path)}. Expected str, PathLike, or {extend.__name__}.")
+        raise TypeError(
+            f"Invalid type for path: {type(path)}. Expected str, PathLike, or {extend.__name__}."
+        )
 
     if extend is not None and isinstance(path, extend):
         return path
@@ -60,7 +46,37 @@ def load_from_path(path: str | PathLike | T, extend: Type[T | None] = type(None)
         return f.read()
 
 
-def load_from_json_path(path: str | PathLike | T, extend: Type[T | None] = type(None)) -> dict | T:
-    if isinstance(path, extend):
-        return path
+def load_from_json_path(path: str | PathLike) -> dict:
     return json.loads(load_from_path(path))
+
+
+def can_renote(note: dict) -> bool:
+    """リノート可能か判定する(ノート数はカウントしていないので注意)
+
+    Args:
+        note (dict): misskeyのノート
+
+    Returns:
+        bool: 可能か
+    """
+    is_public = note["visibility"] == "public"
+    text_exists = note["text"] is not None
+    is_reply = note["replyId"] is not None
+    return is_public and text_exists and not is_reply
+
+
+def can_reply(note: dict, username: str) -> bool:
+    """リプライ可能(pingノート)か判定
+
+    Args:
+        note (dict): misskeyのノート
+
+    Returns:
+        bool: リプライ可能か
+    """
+    if note["text"] is None:
+        return False
+    is_ping = "/ping" in note["text"]
+    is_mention = f"@{username}" in note["text"]
+    is_specified = note["visibility"] == "specified"
+    return is_ping and (is_mention or is_specified)

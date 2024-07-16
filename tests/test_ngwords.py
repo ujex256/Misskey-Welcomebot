@@ -1,7 +1,7 @@
 import ngwords
 
 ng = {"r-18", "荒らす", "twitter", "ワード"}
-allow = {"除外ワード", "除外ワード2"}
+allow = {"除外ワード", "除外ワード2", "スペースあり", "複数スペース"}
 
 
 def test_ngwords():

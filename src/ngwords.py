@@ -4,12 +4,13 @@ from utils import load_from_path
 
 
 class NGWords:
-    """
-    NGワードのファイルを読み込む
-
-    initにngワードのテキストファイルのパスを渡してください。
-    """
     def __init__(self, path: str | os.PathLike) -> None:
+        """
+        NGワードを判定するクラス
+
+        Args:
+            path (str | os.PathLike): ワードのテキストファイルのパス
+        """
         self.raw = load_from_path(path)
         self._load()
 
