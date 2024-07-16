@@ -45,9 +45,9 @@ def test_redis_db(url: str | None, exp: Type[Exception] | None):
     [
         ["", True],
         ["0.0.0.0", False],
-        ["223.255.255.255", False],
-        ["223.255.255.256", True]
-    ]
+        ["255.255.255.255", False],
+        ["255.255.255.256", True],
+    ],
 )
 def test_server_host(ip: str, raise_exp: bool):
     kwargs = default_kwargs.copy()
