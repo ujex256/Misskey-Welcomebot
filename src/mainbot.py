@@ -10,7 +10,6 @@ from marshmallow.exceptions import ValidationError
 
 import utils
 import logging_styles
-import misskey_api as misskey
 from environs import Settings
 from userdb import UserDB
 from ngwords import NGWords
