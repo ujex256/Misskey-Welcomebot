@@ -20,11 +20,23 @@ MisskeyのようこそBotのリポジトリです。
 ```dotenv
 HOST=misskey.example.com  # Misskeyのホスト(misskey.ioなど)
 SECRET_TOKEN=token  # Misskeyのtoken
-CONFIG_DIR=./config
-RUN_SERVER=False  # サーバーを建てるか
 DB_TYPE=redis
 DB_URL=redis://dw  # RedisのURLを入力
 ```
+
+環境変数一覧
+| 変数名 | 型 | 必須 | 内容 | デフォルト |
+|---|---|:---:|---|---|
+| HOST | str | :heavy_check_mark: | Misskeyのホスト |  |
+| SECRET_TOKEN | str | :heavy_check_mark: |  |  |
+| DB_TYPE | str<br />Literal["redis", "pickle"] |  | 投稿したことがあるユーザーをキャッシュさせるDBの種類<br />**(pickleはまだ未対応です)** | redis |
+| DB_URL | str(RedisDsn) |  | DB_TYPEがredisの場合に指定してください |  |
+| RUN_SERVER | bool |  | pingサーバーを起動するか(UptimeRobotなどの監視用) | false |
+| SERVER_HOST | str(IPvAnyAddress) |  | pingサーバーを起動するホスト | 0.0.0.0 |
+| SERVER_PORT | str |  | pingサーバーを起動するポート | 8000 |
+| CONFIG_DIR | str(directory path) |  | configディレクトリを変更する場合のパス | ./config |
+
+
 
 ### 2. response.jsonの編集
 
