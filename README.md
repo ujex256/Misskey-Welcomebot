@@ -28,8 +28,8 @@ DB_URL=redis://dw  # RedisのURLを入力
 | 変数名 | 型 | 必須 | 内容 | デフォルト |
 |---|---|:---:|---|---|
 | HOST | str | :heavy_check_mark: | Misskeyのホスト |  |
-| SECRET_TOKEN | str | :heavy_check_mark: |  |  |
-| DB_TYPE | str |  | 投稿したことがあるユーザーを<br />キャッシュさせるDBの種類<br />(今はredisのみ) | redis |
+| SECRET_TOKEN | str | :heavy_check_mark: | Misskey APIのトークン |  |
+| DB_TYPE | str |  | 投稿したことがあるユーザーをキャッシュさせる<br />DBの種類(今はredisのみ) | redis |
 | DB_URL | str(RedisDsn) |  | DB_TYPEがredisの場合に指定してください |  |
 | RUN_SERVER | bool |  | pingサーバーを起動するか(UptimeRobotなどの監視用) | false |
 | SERVER_HOST | str(IPvAnyAddress) |  | pingサーバーを起動するホスト | 0.0.0.0 |
