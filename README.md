@@ -8,6 +8,7 @@ MisskeyのようこそBotのリポジトリです。
 </div>
 
 ## 何のBot?
+
 タイムラインに流れてきた新規ユーザーのノートにリアクションをつけたり、リノートします。
 
 条件
@@ -16,7 +17,9 @@ MisskeyのようこそBotのリポジトリです。
 <br /><br />
 
 ## 設定
+
 ### 1. `env.example`の名前を`.env`に変更し、中を編集します
+
 ```dotenv
 HOST=misskey.example.com  # Misskeyのホスト(misskey.ioなど)
 SECRET_TOKEN=token  # Misskeyのtoken
@@ -35,7 +38,6 @@ DB_URL=redis://dw  # RedisのURLを入力
 | SERVER_HOST | str(IPvAnyAddress) |  | pingサーバーを起動するホスト | 0.0.0.0 |
 | SERVER_PORT | str |  | pingサーバーを起動するポート | 8000 |
 | CONFIG_DIR | str(directory path) |  | configディレクトリを変更する場合のパス | ./config |
-
 
 
 ### 2. response.jsonの編集
@@ -83,6 +85,7 @@ NGワードを記述します。
 - #から始めるとコメントになります。
 
 ### 4. keep_alive.pyを起動
+
 ```sh
 python src/keep_alive.py
 ```
