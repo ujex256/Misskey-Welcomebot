@@ -74,10 +74,5 @@ def load_from_path(
         return f.read()
 
 
-def load_from_json_path(
-    path: str | PathLike | T,
-    extend: Type[T | None] = type(None),
-) -> dict | T:
-    if isinstance(path, extend):
-        return path
+def load_from_json_path(path: str | PathLike) -> dict:
     return json.loads(load_from_path(path))
