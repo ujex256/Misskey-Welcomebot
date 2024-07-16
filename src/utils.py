@@ -6,7 +6,7 @@ T = TypeVar("T")
 
 
 class Counter:
-    def __init__(self, counter: int, do: Callable) -> None:
+    def __init__(self, count: int, do: Callable) -> None:
         """
         指定の回数呼び出されたときに任意の関数を実行するデコレーター
 
@@ -14,9 +14,9 @@ class Counter:
             counter (int): 何回で実行するか
             do (Callable): 実行される関数
         """
-        self.count = counter
-        self._now = 0
+        self.count = count
         self.do = do
+        self._now = 0
 
     def __call__(self, f) -> Any:
         def wrapper(*args, **kwargs):
