@@ -15,7 +15,10 @@ class EmojiSet:
         Args:
             data (str | dict): response.jsonのパス
         """
-        loaded = load_from_json_path(data, dict)
+        if isinstance(data, dict):
+            loaded = data
+        else:
+            loaded = load_from_json_path(data)
         self._check_format(loaded)
 
         self.response_emojis = loaded["triggers"]
