@@ -88,9 +88,9 @@ class Bot:
                 f"Detected NG word. | noteId: {note_id}, "
                 f"word: {self.ngw.why(note_text)}"
             )
-        elif misskey.can_reply(note_body, self.me):
+        elif utils.can_reply(note_body, self.me):
             await self.api.notes_create(text="Pong!", reply_id=note_id, local_only=True)
-        elif not misskey.can_renote(note_body):
+        elif not utils.can_renote(note_body):
             pass
         elif await self.db.get_user_by_id(user_id):
             self.logger.debug("Skipped api request because it was registered in DB.")
@@ -124,7 +124,7 @@ class Bot:
             except asyncio.TimeoutError:
                 self.logger.warn("API timed out. | endpoint: /api/users/notes")
                 return None
-            if not any([misskey.can_renote(note) for note in notes]):
+            if not any([utils.can_renote(note) for note in notes]):
                 await self.send_welcome(note_id, note_text)
                 return None
 
