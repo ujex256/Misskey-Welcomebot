@@ -29,9 +29,9 @@ DB_URL=redis://dw  # RedisのURLを入力
 |---|---|:---:|---|---|
 | HOST | str | :heavy_check_mark: | Misskeyのホスト |  |
 | SECRET_TOKEN | str | :heavy_check_mark: | Misskey APIのトークン |  |
-| DB_TYPE | str |  | 投稿したことがあるユーザーをキャッシュさせる<br />DBの種類(今はredisのみ) | redis |
+| DB_TYPE | str |  | 投稿したことがあるユーザーを<br />キャッシュさせるDBの種類(今はredisのみ) | redis |
 | DB_URL | str(RedisDsn) |  | DB_TYPEがredisの場合に指定してください |  |
-| RUN_SERVER | bool |  | pingサーバーを起動するか(UptimeRobotなどの監視用) | false |
+| RUN_SERVER | bool |  | pingサーバーを起動するか<br />(UptimeRobotなどの監視用) | false |
 | SERVER_HOST | str(IPvAnyAddress) |  | pingサーバーを起動するホスト | 0.0.0.0 |
 | SERVER_PORT | str |  | pingサーバーを起動するポート | 8000 |
 | CONFIG_DIR | str(directory path) |  | configディレクトリを変更する場合のパス | ./config |
