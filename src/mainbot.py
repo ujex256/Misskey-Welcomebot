@@ -1,6 +1,7 @@
 import asyncio
 import json
 import traceback
+from datetime import datetime
 
 import websockets
 from aiohttp import ClientSession
@@ -82,22 +83,27 @@ class Bot:
 
         # Renote不可ならreturn
         return_flg = True
-        if self.ngw.match(note_text):
+        if not utils.can_renote(note_body):
+            pass
+        elif utils.can_reply(note_body, self.me):
+            await self.api.notes_create(text="Pong!", reply_id=note_id, local_only=True)
+        elif self.ngw.match(note_text):
             self.logger.info(
                 f"Detected NG word. | noteId: {note_id}, "
                 f"word: {self.ngw.why(note_text)}"
             )
-        elif utils.can_reply(note_body, self.me):
-            await self.api.notes_create(text="Pong!", reply_id=note_id, local_only=True)
-        elif not utils.can_renote(note_body):
-            pass
-        elif await self.db.get_user_by_id(user_id):
-            self.logger.debug("Skipped api request because it was registered in DB.")
         else:
             return_flg = False
 
         if return_flg:
             return None
+
+        user = await self.db.get_user_by_id(user_id)
+        if user:
+            user.last_received_date = datetime.now()
+            await user.save()
+            self.logger.debug("Skipped api request because it was registered in DB.")
+            return
 
         self.logger.debug(
             f"Notes not registered in database. | userId: {user_id}, noteId: {note_id}"
