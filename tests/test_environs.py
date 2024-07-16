@@ -10,6 +10,7 @@ default_kwargs = {
     "_env_file": None,  # Don't load .env file
     "host": "dummy",
     "secret_token": "dummy",
+    "db_type": "pickle",
 }
 
 
