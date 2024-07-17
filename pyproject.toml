@@ -1,0 +1,33 @@
+[tool.poetry]
+package-mode = false
+name = "misskey-welcomebot"
+version = "2.0.0"
+description = "Misskey-Welcomebot"
+authors = ["ujex256", "fffena"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.8.2"
+pydantic-settings = "^2.3.4"
+coloredlogs = "^15.0.1"
+aiohttp = "^3.9.5"
+flask = "^3.0.3"
+redis-om = "^0.3.1"
+websockets = "^12.0"
+asynciolimiter = "^1.0.0"
+misskey-py = {version = "5.0.0a1", extras = ["async"], source = "testpypi"}
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+
+
+[[tool.poetry.source]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+priority = "explicit"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
