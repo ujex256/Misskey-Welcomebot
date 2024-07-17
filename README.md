@@ -1,7 +1,7 @@
 # Misskey-WelcomeBot
 <div align="center">
 
-<img src="https://s3.arkjp.net/misskey/webpublic-1c253796-7dc4-4d54-8367-ad2259693ce7.png" height="125" alt="Logo" />
+<img src="https://raw.github.com/ujex256/Misskey-Welcomebot/images/webbot.png" alt="Logo" />
 
 ---
 MisskeyのようこそBotのリポジトリです。
