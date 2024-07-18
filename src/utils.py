@@ -37,7 +37,8 @@ def load_from_path(
 ) -> str | T:
     if not isinstance(path, (str, PathLike, extend)):
         raise TypeError(
-            f"Invalid type for path: {type(path)}. Expected str, PathLike, or {extend.__name__}."
+            f"Invalid type for path: {type(path)}. "
+            f"Expected str, PathLike, or {extend.__name__}."
         )
 
     if extend is not None and isinstance(path, extend):
