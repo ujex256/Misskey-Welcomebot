@@ -1,7 +1,7 @@
 # Misskey-WelcomeBot
 <div align="center">
 
-<img src="https://raw.github.com/ujex256/Misskey-Welcomebot/images/webbot.png" alt="Logo" />
+<img src="https://raw.github.com/ujex256/Misskey-Welcomebot/images/webbot2.png" alt="Logo" />
 
 ---
 MisskeyのようこそBotのリポジトリです。
