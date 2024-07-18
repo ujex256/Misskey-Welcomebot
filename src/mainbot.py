@@ -168,7 +168,10 @@ class Bot:
             raise Exception("DB connection failed.")
 
         while True:
-            async with websockets.connect(streaming_api, user_agent_header=USER_AGENT) as ws:  # fmt: skip
+            async with websockets.connect(
+                streaming_api,
+                user_agent_header=USER_AGENT,
+            ) as ws:
                 # self.on_open(ws)
                 self.logger.info("Bot was started!")
                 await ws.send(json.dumps(CONNECTMSG))
