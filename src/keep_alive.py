@@ -1,20 +1,16 @@
-import logging
+import asyncio
 from multiprocessing import Process
-from os import getenv
 
-import coloredlogs
-from dotenv import load_dotenv
+import aiohttp
 from flask import Flask, jsonify
 
+import environs
 import logging_styles
 import mainbot
 
-
 app = Flask("app")
 
-logger = logging.getLogger(__name__)
-logging_styles.set_default()
-coloredlogs.install(logger=logger)
+logger = logging_styles.getLogger(__name__)
 
 
 @app.get("/")
@@ -22,13 +18,22 @@ def pong():
     return jsonify({"message": "Pong!"})
 
 
-def run_server():
-    app.run(host="0.0.0.0", port=8080)
+def run_server(host: str, port: int):
+    app.run(host=host, port=port)
 
 
 if __name__ == "__main__":
-    load_dotenv()
-    if getenv("RUN_SERVER", False):
-        Process(target=run_server).start()
+    config = environs.Settings()
+    if config.run_server:
+        Process(
+            target=run_server,
+            args=(str(config.server_host), config.server_port),
+        ).start()
         logger.info("Web server started!")
-    mainbot.Bot().start_bot()
+
+    async def main():
+        timeout = aiohttp.ClientTimeout(total=5)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            await mainbot.Bot(config, session).start_bot()
+
+    asyncio.run(main())

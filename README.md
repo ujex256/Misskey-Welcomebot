@@ -1,42 +1,54 @@
+# Misskey-WelcomeBot
 <div align="center">
 
-## Misskey-WelcomeBot
-<img src="https://s3.arkjp.net/misskey/webpublic-1c253796-7dc4-4d54-8367-ad2259693ce7.png" height="125" alt="Logo" />
+<img src="https://raw.github.com/ujex256/Misskey-Welcomebot/images/webbot2.png" alt="Logo" />
 
 ---
 MisskeyのようこそBotのリポジトリです。
 </div>
 
-~~注意:これはReplitでの動作を想定しています。replit以外で動作させる場合は(branch name)を使用してください。~~
-replitはダウンタイムが多すぎるので切り捨てました()
-
 ## 何のBot?
-ローカルタイムライン(TL)に流れてきた初ノートにリアクションをつけたりリノートします。
-(APIへのリクエストを削減するために、DB(redis)にユーザーIDを保存しています。)
+
+タイムラインに流れてきた新規ユーザーのノートにリアクションをつけたり、リノートします。
 
 条件
-- 投稿したユーザーのノート数が1(初ノート)
+- 投稿したユーザーの合計ノート数が1である（初投稿）
 - NGワードが含まれていない
 <br /><br />
 
 ## 設定
-1. `sample.env`の名前を`.env`に変更し、中を編集します。
+
+### 1. `env.example`の名前を`.env`に変更し、中を編集します
+
 ```dotenv
-HOST=misskey.io  # host
-SECRET_TOKEN=token  # misskeyのtoken
-CONFIG_DIR=./config  # configフォルダを指定
-RUN_SERVER=False  # サーバーを建てるならTrue
-DB_TYPE=redis  # redisかpickleで指定
-DB_URL=redis://dw  # redisならurlを入力(pickleなら不要)
+HOST=misskey.example.com  # Misskeyのホスト(misskey.ioなど)
+SECRET_TOKEN=token  # Misskeyのtoken
+DB_TYPE=redis
+DB_URL=redis://dw  # RedisのURLを入力
 ```
 
-2. response.jsonの編集
+環境変数一覧
+| 変数名 | 型 | 必須 | 内容 | デフォルト |
+|---|---|:---:|---|---|
+| HOST | str | :heavy_check_mark: | Misskeyのホスト |  |
+| SECRET_TOKEN | str | :heavy_check_mark: | Misskey APIのトークン |  |
+| DB_TYPE | str |  | 投稿したことがあるユーザーを<br />キャッシュさせるDBの種類(今はredisのみ) | redis |
+| DB_URL | str(RedisDsn) |  | DB_TYPEがredisの場合に指定してください |  |
+| RUN_SERVER | bool |  | pingサーバーを起動するか<br />(UptimeRobotなどの監視用) | false |
+| SERVER_HOST | str(IPvAnyAddress) |  | pingサーバーを起動するホスト | 0.0.0.0 |
+| SERVER_PORT | str |  | pingサーバーを起動するポート | 8000 |
+| CONFIG_DIR | str(directory path) |  | configディレクトリを変更する場合のパス | ./config |
+
+
+### 2. response.jsonの編集
 
 このファイルはconfigディレクトリに保存してください。
 `keywords`にトリガーとなるキーワードを**配列**で指定してください。
 
-`emoji`に反応する絵文字の一覧を指定してください。ここは配列か文字列にしてください。配列の場合はランダムで選択します。
-otherにはトリガーにあてはまらなかった場合の絵文字を指定してください。
+`emoji`に反応する絵文字の一覧を配列か文字列で指定してください。配列の場合はランダムで選択されます。
+
+トリガーにあてはまらなかった場合は`other`に指定された絵文字がランダムで選択されます。
+
 例：
 ```json
 {
@@ -49,10 +61,7 @@ otherにはトリガーにあてはまらなかった場合の絵文字を指定
             "keywords": ["与謝野晶子"],
             "emoji": [
                 ":yosano_akiko_is_always_watching_you:",
-                ":yosano_akiko:",
-                ":yosano_party:",
-                ":petthex_yosano_akiko:",
-                ":youseino_akiko:"
+                ":yosano_akiko:"
             ]
         }
     ],
@@ -61,18 +70,22 @@ otherにはトリガーにあてはまらなかった場合の絵文字を指定
         ":youkoso_send_money:",
         ":send_money:",
         ":welcome_to_underground:",
-        ":supertada:",
+        ":supertada:"
     ]
 }
 ```
 
-3. NGワードの設定
+### 3. NGワードの設定
 
 configディレクトリにngwords.txtを作成します。
 NGワードを記述します。
 
 書式
-- 除外するワードは-をつけてから書きます(スペースはつけない)
+- 除外するワードは-をつけてから書きます（スペースをつけてもOK）
 - #から始めるとコメントになります。
 
-4. keep_alive.pyを起動
+### 4. keep_alive.pyを起動
+
+```sh
+python src/keep_alive.py
+```

@@ -1,41 +1,22 @@
-import time
-import os
-import pickle
-from typing import Any
-from collections import deque
+import json
+from os import PathLike
+from typing import Any, Callable, Type, TypeVar
 
-import dotenv
-
-
-class RateLimiter:
-    def __init__(self, per_second: int):
-        """レートリミット
-
-        Args:
-            per_second (int): 1回の間隔
-        """
-        self.per_second = per_second  # リクエスト送信の間隔（秒）
-        self.last_called_time = time.time()
-
-    def __call__(self, func):
-        def wrapper(*args, **kwargs):
-            self.wait()
-            response = func(*args, **kwargs)
-            self.last_called_time = time.time()
-            return response
-        return wrapper
-
-    def wait(self):
-        elapsed_time = time.time() - self.last_called_time
-        if elapsed_time < self.per_second:
-            time.sleep(self.per_second - elapsed_time)
+T = TypeVar("T")
 
 
 class Counter:
-    def __init__(self, counter, do) -> None:
-        self.count = counter
-        self._now = 0
+    def __init__(self, count: int, do: Callable) -> None:
+        """
+        指定の回数呼び出されたときに任意の関数を実行するデコレーター
+
+        Args:
+            counter (int): 何回で実行するか
+            do (Callable): 実行される関数
+        """
+        self.count = count
         self.do = do
+        self._now = 0
 
     def __call__(self, f) -> Any:
         def wrapper(*args, **kwargs):
@@ -46,51 +27,57 @@ class Counter:
 
             resp = f(*args, **kwargs)
             return resp
+
         return wrapper
 
 
-def config_dir():
-    dotenv.load_dotenv()
-    dir = os.getenv("CONFIG_DIR", "./config")
-    if not os.path.exists(dir):
-        raise FileNotFoundError("Config directory not found.")
-    return dir
+def load_from_path(
+    path: str | PathLike | T,
+    extend: Type[T | None] = type(None),
+) -> str | T:
+    if not isinstance(path, (str, PathLike, extend)):
+        raise TypeError(
+            f"Invalid type for path: {type(path)}. "
+            f"Expected str, PathLike, or {extend.__name__}."
+        )
+
+    if extend is not None and isinstance(path, extend):
+        return path
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
 
 
-def db_type():
-    dotenv.load_dotenv()
-    return os.getenv("DB_TYPE")
+def load_from_json_path(path: str | PathLike) -> dict:
+    return json.loads(load_from_path(path))
 
 
-def update_db(key: str, value, allow_duplicates: bool = True) -> None:
-    if not allow_duplicates:
-        value = set(value)
+def can_renote(note: dict) -> bool:
+    """リノート可能か判定する(ノート数はカウントしていないので注意)
 
-    if db_type() == "redis":
-        import redis
-        dotenv.load_dotenv()
+    Args:
+        note (dict): misskeyのノート
 
-        r = redis.from_url(os.getenv("DB_URL"))
-        p = r.pipeline()
-        for i in value:
-            p.sadd("have_note_user_ids", i)
-        p.execute()
-    elif db_type() == "pickle":
-        with open("./data/users.pickle", "wb") as f:
-            pickle.dump(deque(value), f)
+    Returns:
+        bool: 可能か
+    """
+    is_public = note["visibility"] == "public"
+    text_exists = note["text"] is not None
+    is_reply = note["replyId"] is not None
+    return is_public and text_exists and not is_reply
 
 
-def get_db():
-    if db_type() == "redis":
-        import redis
-        dotenv.load_dotenv()
+def can_reply(note: dict, username: str) -> bool:
+    """リプライ可能(pingノート)か判定
 
-        r = redis.from_url(os.getenv("DB_URL"))
-        return deque(map(lambda x: x.decode(), r.smembers("have_note_user_ids")))
-    elif db_type() == "pickle":
-        try:
-            with open('./data/users.pickle', "rb") as f:
-                have_note_user_ids = pickle.load(f)
-        except FileNotFoundError:
-            have_note_user_ids = deque()
-        return have_note_user_ids
+    Args:
+        note (dict): misskeyのノート
+
+    Returns:
+        bool: リプライ可能か
+    """
+    if note["text"] is None:
+        return False
+    is_ping = "/ping" in note["text"]
+    is_mention = f"@{username}" in note["text"]
+    is_specified = note["visibility"] == "specified"
+    return is_ping and (is_mention or is_specified)
