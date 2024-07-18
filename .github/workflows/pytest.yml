@@ -29,10 +29,10 @@ jobs:
         pip install pytest
         if [ -e pyproject.toml ]; then
           poetry install
-          is_pip = false
+          is_pip=false
         elif [ -e requirements.txt ]; then
           pip install -r requirements.txt
-          is_pip = true
+          is_pip=true
         else
           echo "Cannot find package file"
           exit 1
