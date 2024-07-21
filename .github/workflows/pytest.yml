@@ -1,0 +1,46 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Pytest
+on:
+  push:
+    branches: [ "master", "develop" ]
+  pull_request:
+    branches: [ "master", "develop" ]
+
+permissions:
+  contents: read
+
+jobs:
+  run-pytest:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+    - name: Setup Poetry
+      uses: Gr1N/setup-poetry@v9
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pytest
+        if [ -e pyproject.toml ]; then
+          poetry install
+          is_pip=false
+        elif [ -e requirements.txt ]; then
+          pip install -r requirements.txt
+          is_pip=true
+        else
+          echo "Cannot find package file"
+          exit 1
+        fi
+    - name: Test with pytest
+      run: |
+        if "${is_pip}"; then
+          pytest
+        else
+          poetry run pytest
+        fi
