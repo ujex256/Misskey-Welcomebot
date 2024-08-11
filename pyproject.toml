@@ -1,7 +1,7 @@
 [tool.poetry]
 package-mode = false
 name = "misskey-welcomebot"
-version = "2.0.0"
+version = "2.0.1"
 description = "Misskey-Welcomebot"
 authors = ["ujex256", "fffena"]
 readme = "README.md"
