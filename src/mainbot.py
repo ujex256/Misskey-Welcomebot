@@ -113,7 +113,7 @@ class Bot:
             endpoint="/api/users/show", params={"userId": user_id}
         )
 
-        if (notes_count := user_info["notesCount"]) == 1:
+        if (notes_count := user_info["notesCount"]) == 0:
             await self.send_welcome(note_id, note_text)
         elif notes_count <= 10:  # ノート数が10以下ならRenote出来る可能性
             body = {
